@@ -71,7 +71,7 @@ export function TransactionsContent({
             </div>
 
             {/* Área de Conteúdo */}
-            <div className="flex-1 min-h-0 flex flex-col px-1 pb-1">
+            <div className="flex-1 min-h-0 flex flex-col pb-1">
                 {isPending && data.length === 0 ? (
                     <TableContentSkeleton />
                 ) : data.length === 0 ? (

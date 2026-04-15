@@ -121,7 +121,7 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
             <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full pt-5 md:pt-8 pb-0">
                 <div className="flex flex-row items-center justify-between gap-2">
                     <div className="min-w-0">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground font-jakarta truncate">
+                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
                             Olá, {userName.split(' ')[0]}!
                         </h1>
                     </div>

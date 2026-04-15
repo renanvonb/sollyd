@@ -94,7 +94,7 @@ export default function CadastrosPage() {
                 {/* Page Header - Título, descrição, busca e botão no mesmo nível */}
                 <div className="flex items-center justify-between flex-none">
                     <div className="ml-2">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground font-jakarta">
+                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta">
                             {currentTab.title}
                         </h1>
                     </div>

@@ -17,23 +17,23 @@ export function DataTableSortHeader<TData, TValue>({
     className,
 }: DataTableSortHeaderProps<TData, TValue>) {
     if (!column.getCanSort()) {
-        return <div className={cn(className)}>{title}</div>
+        return <div className={cn("text-xs md:text-sm", className)}>{title}</div>
     }
 
     return (
         <Button
             variant="ghost"
             size="sm"
-            className={cn("-ml-3 h-8 data-[state=open]:bg-accent", className)}
+            className={cn("-ml-3 h-7 px-2 text-xs md:h-8 md:px-3 md:text-sm data-[state=open]:bg-accent", className)}
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
             <span>{title}</span>
             {column.getIsSorted() === "desc" ? (
-                <ArrowDown className="ml-2 h-4 w-4" />
+                <ArrowDown className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
             ) : column.getIsSorted() === "asc" ? (
-                <ArrowUp className="ml-2 h-4 w-4" />
+                <ArrowUp className="ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4" />
             ) : (
-                <ChevronsUpDown className="ml-2 h-4 w-4 opacity-50" />
+                <ChevronsUpDown className="ml-1.5 h-3.5 w-3.5 opacity-50 md:ml-2 md:h-4 md:w-4" />
             )}
         </Button>
     )

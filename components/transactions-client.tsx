@@ -202,7 +202,7 @@ export default function TransactionsClient({ initialData }: TransactionsClientPr
                 <div className="flex flex-wrap md:flex-nowrap items-center justify-between flex-none gap-y-3 gap-x-2 w-full">
                     {/* 1. Título */}
                     <div className="order-1 min-w-0 shrink">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground font-jakarta truncate">
+                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
                             Transações
                         </h1>
                         <p className="text-muted-foreground mt-1 font-sans text-sm font-inter hidden md:block">

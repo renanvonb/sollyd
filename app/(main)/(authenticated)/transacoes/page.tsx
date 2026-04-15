@@ -264,8 +264,8 @@ export default function TransactionsPage() {
                 variant="simple"
             />
 
-            {/* Main Content Wrapper */}
-            <div className="max-w-[1440px] mx-auto px-8 w-full flex-1 flex flex-col pt-8 pb-8 gap-8 overflow-hidden">
+            {/* Main Content Wrapper — padding alinhado ao dashboard */}
+            <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full flex-1 flex flex-col pb-5 md:pb-8 gap-5 md:gap-8 overflow-hidden">
 
                 <TransactionsHeader
                     title="Transações"
@@ -273,6 +273,7 @@ export default function TransactionsPage() {
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
                     range={range}
+                    onRangeChange={handleRangeChange}
                     date={dateRange}
                     onDateChange={handleDateChange}
                     onAddClick={handleAddClick}

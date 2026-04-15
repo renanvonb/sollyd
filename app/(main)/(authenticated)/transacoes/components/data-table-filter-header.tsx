@@ -46,13 +46,13 @@ export function DataTableFilterHeader<TData, TValue>({
                             variant="ghost"
                             size="sm"
                             className={cn(
-                                "-ml-3 h-8 data-[state=open]:bg-accent",
+                                "-ml-3 h-7 px-2 text-xs md:h-8 md:px-3 md:text-sm data-[state=open]:bg-accent",
                                 filterValue && "text-primary"
                             )}
                         >
                             <span>{title}</span>
                             <Filter className={cn(
-                                "ml-2 h-4 w-4",
+                                "ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4",
                                 filterValue ? "opacity-100" : "opacity-50"
                             )} />
                         </Button>
@@ -97,13 +97,13 @@ export function DataTableFilterHeader<TData, TValue>({
                         variant="ghost"
                         size="sm"
                         className={cn(
-                            "-ml-3 h-8 data-[state=open]:bg-accent",
+                            "-ml-3 h-7 px-2 text-xs md:h-8 md:px-3 md:text-sm data-[state=open]:bg-accent",
                             filterValue && "text-primary"
                         )}
                     >
                         <span>{title}</span>
                         <Filter className={cn(
-                            "ml-2 h-4 w-4",
+                            "ml-1.5 h-3.5 w-3.5 md:ml-2 md:h-4 md:w-4",
                             filterValue ? "opacity-100" : "opacity-50"
                         )} />
                     </Button>

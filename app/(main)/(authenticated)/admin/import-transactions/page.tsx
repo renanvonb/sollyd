@@ -178,7 +178,7 @@ export default function ImportTransactionsPage() {
     return (
         <div className="max-w-[1440px] mx-auto px-8 py-8">
             <Card className="p-6">
-                <h1 className="text-2xl font-bold mb-4 font-jakarta">Importar Transações - Janeiro 2026</h1>
+                <h1 className="text-2xl font-semibold md:font-bold mb-4 font-jakarta">Importar Transações - Janeiro 2026</h1>
                 <p className="text-sm text-muted-foreground mb-6">
                     Este script irá inserir {transactions.length} transações de despesas de moradia no banco de dados.
                 </p>

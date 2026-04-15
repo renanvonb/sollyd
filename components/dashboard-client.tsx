@@ -354,7 +354,7 @@ export default function DashboardClient({ initialData, userName, metrics }: Dash
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between flex-none">
                     {/* Título — isolado no topo em mobile */}
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-foreground font-jakarta">
+                        <h1 className="text-2xl md:text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta">
                             Olá, {userName.split(' ')[0]}!
                         </h1>
                     </div>

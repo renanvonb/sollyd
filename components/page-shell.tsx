@@ -38,7 +38,7 @@ export function PageShell({
                 <div className="flex flex-row items-center justify-between flex-none font-sans gap-2">
                     {/* Título — sempre na mesma linha no mobile e desktop */}
                     <div className="min-w-0">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground font-jakarta truncate">
+                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
                             {title}
                         </h1>
                         {description && (

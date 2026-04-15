@@ -1,10 +1,11 @@
 'use client'
 
 import * as React from 'react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { PanelLeftClose, PanelLeftOpen, Bell, Sun, Eye, EyeOff, Moon } from 'lucide-react'
+import { PanelLeftClose, PanelLeftOpen, Bell, Sun, Eye, EyeOff, Moon, Menu } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useSidebar } from '@/hooks/use-sidebar-state'
 import { useVisibility } from '@/hooks/use-visibility-state'
@@ -40,8 +41,35 @@ export function PageHeader({ links, isLoading }: PageHeaderProps) {
     const moduleName = "Transações"
 
     return (
-        <header id="global-header" className="sticky top-0 z-30 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md h-[72px] flex-none font-sans">
-            <div className="max-w-[1440px] mx-auto px-8 h-full flex items-center justify-between w-full">
+        <header id="global-header" className="sticky top-0 z-30 w-full border-b border-zinc-200 bg-white/80 backdrop-blur-md h-14 md:h-[72px] flex-none font-sans">
+            {/* Mobile: logotipo à esquerda, menu à direita (sem troca de tema) */}
+            <div className="flex h-full md:hidden items-center justify-between px-4">
+                <div className="flex items-center gap-2 min-w-0 flex-1 pr-2">
+                    <div className="relative h-7 w-7 shrink-0">
+                        <Image
+                            src="/brand/symbol.png"
+                            alt=""
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
+                    <span className="font-jakarta font-bold text-lg text-zinc-950 tracking-tight truncate">
+                        Sollyd
+                    </span>
+                </div>
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={toggle}
+                    className="shrink-0 text-zinc-400 hover:text-zinc-950"
+                    aria-label="Abrir menu"
+                >
+                    <Menu className="h-5 w-5" />
+                </Button>
+            </div>
+
+            <div className="hidden md:flex max-w-[1440px] mx-auto px-8 h-full items-center justify-between w-full">
 
                 {/* Left: Sidebar Toggle + Static Breadcrumb */}
                 <div className="flex items-center gap-4">

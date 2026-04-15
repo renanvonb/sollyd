@@ -30,7 +30,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-    themeColor: '#fafafa',
+    themeColor: '#0d0d0d',
     width: 'device-width',
     initialScale: 1,
 };
@@ -55,8 +55,8 @@ export default function RootLayout({
             >
                 <ThemeProvider
                     attribute="class"
-                    defaultTheme="light"
-                    enableSystem
+                    defaultTheme="dark"
+                    enableSystem={false}
                     disableTransitionOnChange
                 >
                     {children}

@@ -121,7 +121,7 @@ export default function SignupPage() {
                                 />
                             </div>
                         </div>
-                        <h1 className="text-2xl font-bold tracking-tight text-zinc-950 font-jakarta mb-2">
+                        <h1 className="text-2xl font-semibold md:font-bold tracking-tight text-zinc-950 font-jakarta mb-2">
                             Crie sua conta
                         </h1>
                         <p className="text-zinc-500 font-inter">

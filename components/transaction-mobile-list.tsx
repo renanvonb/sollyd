@@ -84,24 +84,24 @@ export function TransactionMobileList({
                             <div className="flex-1 min-w-0 space-y-1.5">
                                 {/* Row 1: Description + Value */}
                                 <div className="flex items-center justify-between gap-2">
-                                    <p className="text-sm font-medium text-neutral-100 truncate">
+                                    <p className="text-xs font-medium text-neutral-100 truncate leading-snug">
                                         {tx.description}
                                     </p>
-                                    <span className={cn("text-sm font-semibold tabular-nums shrink-0", type.valueClass)}>
+                                    <span className={cn("text-xs font-semibold tabular-nums shrink-0", type.valueClass)}>
                                         {formatValue(parseFloat(tx.amount as any))}
                                     </span>
                                 </div>
 
                                 {/* Row 2: Badges */}
                                 <div className="flex flex-wrap items-center gap-1.5">
-                                    <Badge className={cn("text-xs font-medium border-none shadow-none", type.badgeClass)}>
+                                    <Badge className={cn("text-[10px] font-medium border-none shadow-none leading-tight md:text-xs", type.badgeClass)}>
                                         {type.label}
                                     </Badge>
-                                    <Badge className={cn("text-xs font-medium border-none shadow-none", statusClass)}>
+                                    <Badge className={cn("text-[10px] font-medium border-none shadow-none leading-tight md:text-xs", statusClass)}>
                                         {refinedStatus}
                                     </Badge>
                                     {tx.date && (
-                                        <span className="text-xs text-neutral-500 tabular-nums">
+                                        <span className="text-[10px] text-neutral-500 tabular-nums md:text-xs">
                                             {formatDate(tx.date)}
                                         </span>
                                     )}
@@ -111,12 +111,12 @@ export function TransactionMobileList({
                                 {(tx.payees?.name || tx.categories?.name) && (
                                     <div className="flex flex-wrap items-center gap-1.5">
                                         {tx.payees?.name && (
-                                            <Badge variant="secondary" className="text-xs font-normal shadow-none">
+                                            <Badge variant="secondary" className="text-[10px] font-normal shadow-none md:text-xs">
                                                 {tx.payees.name}
                                             </Badge>
                                         )}
                                         {tx.categories?.name && (
-                                            <Badge variant="secondary" className="text-xs font-normal shadow-none">
+                                            <Badge variant="secondary" className="text-[10px] font-normal shadow-none md:text-xs">
                                                 {tx.categories.name}
                                             </Badge>
                                         )}

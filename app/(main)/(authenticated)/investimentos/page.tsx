@@ -13,7 +13,7 @@ export default function InvestimentosPage() {
             <div className="max-w-[1440px] mx-auto px-8 w-full flex-1 flex flex-col pt-8 pb-8 gap-8 overflow-hidden">
                 <div className="flex items-center justify-between flex-none px-1">
                     <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-bold tracking-tight text-foreground font-jakarta">
+                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta">
                             Investimentos
                         </h1>
                         <Badge variant="secondary" className="font-sans mt-1.5">Em breve</Badge>

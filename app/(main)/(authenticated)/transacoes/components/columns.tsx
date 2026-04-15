@@ -40,7 +40,7 @@ const statusOptions = [
 export const columns: ColumnDef<Transaction>[] = [
     {
         accessorKey: "description",
-        header: () => <div>Descrição</div>,
+        header: () => <div className="text-xs md:text-sm">Descrição</div>,
         cell: ({ row, table }) => {
             const description = row.getValue("description") as string
             const searchQuery = (table.options.meta as any)?.searchQuery || ""
@@ -48,7 +48,7 @@ export const columns: ColumnDef<Transaction>[] = [
                 <div className="flex items-center gap-2 overflow-hidden">
                     <TruncatedTextWithTooltip
                         text={description}
-                        className="text-sm font-medium truncate block"
+                        className="text-xs md:text-sm font-medium truncate block"
                     >
                         <HighlightText
                             text={description}
@@ -94,7 +94,7 @@ export const columns: ColumnDef<Transaction>[] = [
             }
 
             return (
-                <Badge className={cn("font-medium border-none shadow-none", config.className)}>
+                <Badge className={cn("font-medium border-none shadow-none text-[10px] leading-tight md:text-xs", config.className)}>
                     {config.label}
                 </Badge>
             )
@@ -113,11 +113,11 @@ export const columns: ColumnDef<Transaction>[] = [
         cell: ({ row }) => {
             const payee = row.original.payees?.name
             return payee ? (
-                <Badge variant="secondary" className="text-xs font-normal whitespace-nowrap shadow-none">
+                <Badge variant="secondary" className="text-[10px] font-normal whitespace-nowrap shadow-none md:text-xs">
                     {payee}
                 </Badge>
             ) : (
-                <span className="text-sm text-muted-foreground">-</span>
+                <span className="text-xs md:text-sm text-muted-foreground">-</span>
             )
         },
         filterFn: (row, id, value) => {
@@ -135,11 +135,11 @@ export const columns: ColumnDef<Transaction>[] = [
         cell: ({ row }) => {
             const category = row.original.categories?.name
             return category ? (
-                <Badge variant="secondary" className="text-xs font-normal whitespace-nowrap shadow-none">
+                <Badge variant="secondary" className="text-[10px] font-normal whitespace-nowrap shadow-none md:text-xs">
                     {category}
                 </Badge>
             ) : (
-                <span className="text-sm text-muted-foreground">-</span>
+                <span className="text-xs md:text-sm text-muted-foreground">-</span>
             )
         },
         filterFn: (row, id, value) => {
@@ -157,11 +157,11 @@ export const columns: ColumnDef<Transaction>[] = [
         cell: ({ row }) => {
             const classification = row.original.classifications?.name
             return classification ? (
-                <Badge variant="secondary" className="text-xs font-normal whitespace-nowrap shadow-none">
+                <Badge variant="secondary" className="text-[10px] font-normal whitespace-nowrap shadow-none md:text-xs">
                     {classification}
                 </Badge>
             ) : (
-                <span className="text-sm text-muted-foreground">-</span>
+                <span className="text-xs md:text-sm text-muted-foreground">-</span>
             )
         },
         filterFn: (row, id, value) => {
@@ -179,11 +179,11 @@ export const columns: ColumnDef<Transaction>[] = [
         cell: ({ row }) => {
             const paymentMethod = row.original.payment_method
             return paymentMethod ? (
-                <Badge variant="secondary" className="text-xs font-normal whitespace-nowrap shadow-none">
+                <Badge variant="secondary" className="text-[10px] font-normal whitespace-nowrap shadow-none md:text-xs">
                     {paymentMethod}
                 </Badge>
             ) : (
-                <span className="text-sm text-muted-foreground">-</span>
+                <span className="text-xs md:text-sm text-muted-foreground">-</span>
             )
         },
         filterFn: (row, id, value) => {
@@ -193,15 +193,15 @@ export const columns: ColumnDef<Transaction>[] = [
     {
         accessorKey: "competence",
         size: 100,
-        header: () => <div>Competência</div>,
+        header: () => <div className="text-xs md:text-sm">Competência</div>,
         cell: ({ row }) => {
             const comp = row.original.competence as string | null
-            if (!comp) return <span className="text-sm text-muted-foreground">-</span>
+            if (!comp) return <span className="text-xs md:text-sm text-muted-foreground">-</span>
             const [year, month] = comp.split("-")
             const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez']
             const monthIndex = parseInt(month) - 1
             const formatted = `${monthNames[monthIndex]}/${year}`
-            return <div className="text-sm tabular-nums text-muted-foreground">
+            return <div className="text-xs md:text-sm tabular-nums text-muted-foreground">
                 {formatted}
             </div>
         },
@@ -214,10 +214,10 @@ export const columns: ColumnDef<Transaction>[] = [
         ),
         cell: ({ row }) => {
             const date = row.getValue("date") as string | null
-            if (!date) return <span className="text-sm text-muted-foreground">-</span>
+            if (!date) return <span className="text-xs md:text-sm text-muted-foreground">-</span>
             const [year, month, day] = date.split("-")
             const formatted = `${day}/${month}/${year}`
-            return <div className="text-sm tabular-nums text-muted-foreground">
+            return <div className="text-xs md:text-sm tabular-nums text-muted-foreground">
                 {formatted}
             </div>
         },
@@ -248,7 +248,7 @@ export const columns: ColumnDef<Transaction>[] = [
                     : "text-blue-600"
 
             return (
-                <div className={`text-sm font-semibold text-left tabular-nums ${colorClass}`}>
+                <div className={`text-xs md:text-sm font-semibold text-left tabular-nums ${colorClass}`}>
                     <HighlightText text={formatted} highlight={searchQuery} />
                 </div>
             )
@@ -294,7 +294,7 @@ export const columns: ColumnDef<Transaction>[] = [
             }
 
             return (
-                <Badge className={cn("font-medium border-none shadow-none", config.className)}>
+                <Badge className={cn("font-medium border-none shadow-none text-[10px] leading-tight md:text-xs", config.className)}>
                     {refinedStatus}
                 </Badge>
             )
