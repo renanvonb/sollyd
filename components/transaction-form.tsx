@@ -323,11 +323,11 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col flex-1 min-h-0 gap-4">
                 <Tabs
                     value={type}
                     onValueChange={(v) => form.setValue("type", v as any)}
-                    className="w-full"
+                    className="w-full shrink-0"
                 >
                     <TabsList className="grid w-full grid-cols-3">
                         <TabsTrigger value="Despesa" disabled={isLoadingData}>
@@ -342,7 +342,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                     </TabsList>
                 </Tabs>
 
-                <div className="flex flex-col gap-6 min-h-[600px]">
+                <div className="flex flex-col gap-6 flex-1 overflow-y-auto min-h-0 scrollbar-hide p-1">
                     {isLoadingData ? (
                         <div className="flex flex-col gap-6">
                             <div className="space-y-2">
@@ -747,7 +747,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                     )}
                 </div>
 
-                <div className="flex justify-between gap-3 pt-2">
+                <div className="flex justify-between gap-3 pt-3 border-t border-border shrink-0">
                     {transaction?.id && (
                         <Button
                             type="button"

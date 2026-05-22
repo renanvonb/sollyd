@@ -1,15 +1,9 @@
 "use client"
 
-import { Search, Plus, ChevronDown } from "lucide-react"
+import { Search, Plus } from "lucide-react"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { AdaptiveDatePicker } from "@/components/ui/adaptive-date-picker"
-import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
 import { DateRange } from "react-day-picker"
 import { TimeRange } from "@/types/time-range"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -23,7 +17,6 @@ import {
 
 interface TransactionsHeaderProps {
     title: string
-    description: string
     searchValue: string
     onSearchChange: (value: string) => void
     range: TimeRange
@@ -37,7 +30,6 @@ interface TransactionsHeaderProps {
 
 export function TransactionsHeader({
     title,
-    description,
     searchValue,
     onSearchChange,
     range,
@@ -54,14 +46,9 @@ export function TransactionsHeader({
             <div className="w-full pt-5 md:pt-8 pb-0">
                 <div className="flex flex-row items-center justify-between gap-2">
                     <div className="min-w-0">
-                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
+                        <h1 className="text-2xl font-bold tracking-tight text-foreground font-jakarta truncate">
                             {title}
                         </h1>
-                        {description ? (
-                            <p className="text-muted-foreground mt-1 font-sans text-sm md:text-base hidden md:block">
-                                {description}
-                            </p>
-                        ) : null}
                     </div>
 
                     <div
@@ -109,38 +96,14 @@ export function TransactionsHeader({
                                 className="w-10 px-0 justify-center h-10 shrink-0 md:w-auto md:justify-start md:px-3 [&>span]:hidden md:[&>span]:inline md:[&>svg]:mr-2"
                             />
 
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button
-                                        className="h-10 w-10 shrink-0 p-0 font-inter font-medium md:w-auto md:px-3 md:gap-0"
-                                        aria-label="Adicionar transação"
-                                    >
-                                        <Plus className="h-4 w-4 md:mr-2" />
-                                        <span className="hidden md:inline">Adicionar</span>
-                                        <ChevronDown className="h-4 w-4 ml-1 hidden md:inline" />
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end" className="w-[160px]">
-                                    <DropdownMenuItem
-                                        className="cursor-pointer"
-                                        onClick={() => onAddClick("revenue")}
-                                    >
-                                        Receita
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        className="cursor-pointer"
-                                        onClick={() => onAddClick("expense")}
-                                    >
-                                        Despesa
-                                    </DropdownMenuItem>
-                                    <DropdownMenuItem
-                                        className="cursor-pointer"
-                                        onClick={() => onAddClick("investment")}
-                                    >
-                                        Investimento
-                                    </DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
+                            <Button
+                                className="h-10 w-10 shrink-0 p-0 font-inter font-medium md:w-auto md:px-3 md:gap-0"
+                                aria-label="Adicionar transação"
+                                onClick={() => onAddClick("expense")}
+                            >
+                                <Plus className="h-4 w-4 md:mr-2" />
+                                <span className="hidden md:inline">Adicionar</span>
+                            </Button>
                         </div>
 
                         <div className="hidden md:block relative w-[250px] shrink-0">
@@ -155,10 +118,21 @@ export function TransactionsHeader({
                     </div>
                 </div>
 
+                {/* Busca mobile */}
+                <div className="relative flex md:hidden mt-3">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Buscar transação..."
+                        className="pl-9 h-10 font-inter w-full text-sm"
+                        value={searchValue}
+                        onChange={(e) => onSearchChange(e.target.value)}
+                    />
+                </div>
+
                 <Tabs
                     value={statusFilter}
                     onValueChange={onStatusFilterChange}
-                    className="w-full flex md:hidden mt-4"
+                    className="w-full flex md:hidden mt-3"
                 >
                     <TabsList className="w-full h-10 flex bg-muted/50 p-1">
                         <TabsTrigger value="all" className="flex-1 h-8 font-inter">

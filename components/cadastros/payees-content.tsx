@@ -143,7 +143,7 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                     {filteredPayees.map((payee) => {
                         const IconComponent = getIconByName('arrow-down-right');
                         const cardColor = getColorHex('red');
@@ -157,7 +157,7 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
                                     onOpenChange(true);
                                 }}
                             >
-                                <CardContent className="p-6">
+                                <CardContent className="p-4">
                                     <div className="flex items-center gap-4">
                                         <div
                                             className="rounded-full h-10 w-10 flex items-center justify-center flex-shrink-0"

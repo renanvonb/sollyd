@@ -30,13 +30,13 @@ export function DatePicker({ value, onChange, placeholder = "Selecione", classNa
                     variant="outline"
                     disabled={disabled}
                     className={cn(
-                        "w-full justify-start text-left font-normal",
+                        "w-full justify-start text-left font-normal px-3 gap-2",
                         (disabled || !value) && "text-muted-foreground",
-                        "aria-invalid:border-red-600 aria-invalid:focus-visible:ring-red-600",
+                        "aria-invalid:border-destructive aria-invalid:focus-visible:ring-destructive",
                         className
                     )}
                 >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    <CalendarIcon className="h-4 w-4" />
                     {disabled || !value ? (
                         <span>{placeholder}</span>
                     ) : (
@@ -44,7 +44,7 @@ export function DatePicker({ value, onChange, placeholder = "Selecione", classNa
                     )}
                 </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0 bg-white" align="start">
+            <PopoverContent className="w-auto p-0 bg-popover border-border" align="start">
                 <Calendar
                     mode="single"
                     selected={value}

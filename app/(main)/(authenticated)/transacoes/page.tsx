@@ -265,11 +265,10 @@ export default function TransactionsPage() {
             />
 
             {/* Main Content Wrapper — padding alinhado ao dashboard */}
-            <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full flex-1 flex flex-col pb-5 md:pb-8 gap-5 md:gap-8 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-8 w-full flex-1 flex flex-col pb-4 md:pb-8 gap-5 md:gap-8 overflow-hidden">
 
                 <TransactionsHeader
                     title="Transações"
-                    description="Gerencie e acompanhe suas movimentações financeiras."
                     searchValue={searchValue}
                     onSearchChange={setSearchValue}
                     range={range}
@@ -297,17 +296,12 @@ export default function TransactionsPage() {
                 {/* Dialog Nova Transação */}
                 <Dialog open={isNewSheetOpen} onOpenChange={setIsNewSheetOpen}>
                     <DialogContent
-                        className="sm:max-w-[480px]"
+                        className="sm:max-w-[480px] flex flex-col overflow-hidden h-[85dvh] sm:h-auto sm:max-h-[90dvh]"
                         onInteractOutside={(e) => e.preventDefault()}
                         onEscapeKeyDown={(e) => e.preventDefault()}
                     >
                         <DialogHeader>
-                            <DialogTitle className="font-jakarta">
-                                Nova transação
-                            </DialogTitle>
-                            <DialogDescription>
-                                Preencha os dados da nova transação
-                            </DialogDescription>
+                            <DialogTitle className="font-jakarta">Nova transação</DialogTitle>
                         </DialogHeader>
                         <TransactionForm
                             open={isNewSheetOpen}
@@ -325,15 +319,12 @@ export default function TransactionsPage() {
                     if (!open) setSelectedTransaction(null)
                 }}>
                     <DialogContent
-                        className="sm:max-w-[480px]"
+                        className="sm:max-w-[480px] flex flex-col overflow-hidden h-[85dvh] sm:h-auto sm:max-h-[90dvh]"
                         onInteractOutside={(e) => e.preventDefault()}
                         onEscapeKeyDown={(e) => e.preventDefault()}
                     >
                         <DialogHeader>
                             <DialogTitle className="font-jakarta">Editar transação</DialogTitle>
-                            <DialogDescription>
-                                Atualize os dados da transação
-                            </DialogDescription>
                         </DialogHeader>
                         <TransactionForm
                             key={selectedTransaction?.id}
@@ -347,7 +338,7 @@ export default function TransactionsPage() {
 
                 {/* Dialog Confirmação de Exclusão */}
                 <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
-                    <AlertDialogContent className="sm:max-w-[400px]">
+                    <AlertDialogContent className="sm:max-w-[400px] w-[calc(100%-2rem)]">
                         <AlertDialogHeader>
                             <AlertDialogTitle>Excluir</AlertDialogTitle>
                             <AlertDialogDescription>

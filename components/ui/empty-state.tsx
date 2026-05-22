@@ -43,13 +43,13 @@ const EmptyState = React.forwardRef<HTMLDivElement, EmptyStateProps>(
             >
                 <div className="flex flex-col items-center justify-center animate-in fade-in zoom-in-95 duration-500">
                     {Icon && (
-                        <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-muted">
-                            <Icon className="h-8 w-8 text-muted-foreground" strokeWidth={1.5} />
+                        <div className="mb-4 flex h-12 w-12 md:h-16 md:w-16 items-center justify-center rounded-full bg-muted">
+                            <Icon className="h-6 w-6 md:h-8 md:w-8 text-muted-foreground" strokeWidth={1.5} />
                         </div>
                     )}
-                    <h3 className={cn("text-xl font-bold tracking-tight font-jakarta text-foreground", titleClassName)}>{title}</h3>
+                    <h3 className={cn("text-base md:text-xl font-bold tracking-tight font-jakarta text-foreground", titleClassName)}>{title}</h3>
                     {description && (
-                        <p className="mt-2 text-muted-foreground font-sans max-w-[400px]">
+                        <p className="mt-2 text-sm md:text-base text-muted-foreground font-sans max-w-[400px]">
                             {description}
                         </p>
                     )}

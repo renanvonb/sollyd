@@ -152,7 +152,7 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 p-1">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
                     {filteredPayers.map((payer) => {
                         const IconComponent = getIconByName('arrow-up-right');
                         const colorClass = getColorClass('green');
@@ -166,7 +166,7 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
                                     onOpenChange(true);
                                 }}
                             >
-                                <CardContent className="p-6">
+                                <CardContent className="p-4">
                                     <div className="flex items-center gap-4">
                                         <div className={cn('rounded-full p-2.5 flex-shrink-0', colorClass)}>
                                             <IconComponent className="h-5 w-5 text-white" />

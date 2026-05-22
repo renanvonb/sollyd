@@ -89,19 +89,17 @@ export default function CadastrosPage() {
             />
 
             {/* Wrapper Principal */}
-            <div className="max-w-[1440px] mx-auto px-8 w-full flex-1 flex flex-col pt-8 pb-8 gap-8 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-4 md:px-8 w-full flex-1 flex flex-col pt-5 md:pt-8 pb-4 md:pb-8 gap-5 md:gap-8 overflow-hidden">
 
-                {/* Page Header - Título, descrição, busca e botão no mesmo nível */}
+                {/* Page Header */}
                 <div className="flex items-center justify-between flex-none">
-                    <div className="ml-2">
-                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta">
-                            {currentTab.title}
-                        </h1>
-                    </div>
+                    <h1 className="text-2xl font-bold tracking-tight text-foreground font-jakarta">
+                        Cadastros
+                    </h1>
 
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-2 md:gap-3">
                         {activeTab === 'categorias' && (
-                            <Tabs value={categoryType} onValueChange={(v) => setCategoryType(v as any)} className="w-auto">
+                            <Tabs value={categoryType} onValueChange={(v) => setCategoryType(v as any)} className="w-auto hidden md:flex">
                                 <TabsList className="grid w-full grid-cols-2">
                                     <TabsTrigger value="Despesa">Despesa</TabsTrigger>
                                     <TabsTrigger value="Receita">Receita</TabsTrigger>
@@ -109,8 +107,8 @@ export default function CadastrosPage() {
                             </Tabs>
                         )}
 
-                        {/* Search Bar */}
-                        <div className="relative w-[250px]">
+                        {/* Search Bar — desktop only */}
+                        <div className="relative w-[250px] hidden md:block">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
                             <Input
                                 placeholder="Buscar"
@@ -120,15 +118,45 @@ export default function CadastrosPage() {
                             />
                         </div>
 
-                        {/* Add Button */}
+                        {/* Add Button — ícone no mobile, texto no desktop */}
                         <Button
                             onClick={handleAddClick}
-                            className="font-inter font-medium"
+                            className="h-10 w-10 shrink-0 p-0 font-inter font-medium md:w-auto md:px-3 md:gap-0"
                         >
-                            <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
+                            <Plus className="h-4 w-4 md:mr-2" />
+                            <span className="hidden md:inline">Adicionar</span>
                         </Button>
                     </div>
+                </div>
+
+                {/* Tabs mobile para navegação entre áreas */}
+                <div className="flex md:hidden -mt-2 overflow-x-auto scrollbar-hide">
+                    <div className="flex gap-1.5 min-w-max">
+                        {tabs.map((tab) => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id as TabType)}
+                                className={`px-4 py-2 rounded-full text-sm font-medium font-inter whitespace-nowrap transition-colors ${
+                                    activeTab === tab.id
+                                        ? 'bg-secondary text-foreground border border-transparent'
+                                        : 'border border-border text-muted-foreground hover:text-foreground'
+                                }`}
+                            >
+                                {tab.label}
+                            </button>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Search mobile */}
+                <div className="relative flex md:hidden -mt-2">
+                    <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                    <Input
+                        placeholder="Buscar..."
+                        className="pl-9 h-10 font-inter w-full text-sm"
+                        value={searchValue}
+                        onChange={(e) => setSearchValue(e.target.value)}
+                    />
                 </div>
 
                 {/* Content Area - Cards */}

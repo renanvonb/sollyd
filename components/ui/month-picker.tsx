@@ -45,7 +45,7 @@ export function MonthPicker({ value, onChange, className }: MonthPickerProps) {
                 <Button
                     variant="outline"
                     className={cn(
-                        "w-[120px] justify-start text-left font-inter font-normal px-3",
+                        "w-[120px] justify-start text-left font-inter font-normal px-3 gap-2",
                         !value && "text-muted-foreground",
                         className
                     )}

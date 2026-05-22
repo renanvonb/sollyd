@@ -26,10 +26,11 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Separator } from "@/components/ui/separator"
-import { Camera, Loader2, Trash2, Lock } from "lucide-react"
+import { Camera, Loader2, Trash2, Lock, Sun, Moon, Monitor } from "lucide-react"
 import { toast } from "sonner"
 import { updateProfile } from "@/app/actions/auth"
 import { createClient } from "@/lib/supabase/client"
+import { useTheme } from "next-themes"
 
 interface ProfileSheetProps {
     user: any
@@ -43,6 +44,7 @@ export function ProfileSheet({ user, isOpen, onOpenChange }: ProfileSheetProps) 
     const [isSaving, setIsSaving] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
     const supabase = createClient()
+    const { theme, setTheme } = useTheme()
 
     useEffect(() => {
         if (user) {
@@ -221,6 +223,34 @@ export function ProfileSheet({ user, isOpen, onOpenChange }: ProfileSheetProps) 
                                     className="bg-transparent border-border focus:ring-primary font-inter h-10"
                                     required
                                 />
+                            </div>
+
+                            {/* Preferência de tema */}
+                            <div className="space-y-2 pt-2">
+                                <Label className="text-sm font-semibold text-foreground font-inter">
+                                    Tema
+                                </Label>
+                                <div className="grid grid-cols-3 gap-2">
+                                    {[
+                                        { value: "light", label: "Claro", icon: Sun },
+                                        { value: "dark", label: "Escuro", icon: Moon },
+                                        { value: "system", label: "Sistema", icon: Monitor },
+                                    ].map(({ value, label, icon: Icon }) => (
+                                        <button
+                                            key={value}
+                                            type="button"
+                                            onClick={() => setTheme(value)}
+                                            className={`flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs font-medium font-inter transition-colors ${
+                                                theme === value
+                                                    ? "border-primary bg-primary/10 text-foreground"
+                                                    : "border-border text-muted-foreground hover:text-foreground hover:border-foreground/30"
+                                            }`}
+                                        >
+                                            <Icon className="h-4 w-4" />
+                                            {label}
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
                         </TabsContent>
 

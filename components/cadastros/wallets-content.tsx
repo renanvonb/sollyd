@@ -140,7 +140,7 @@ export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsCon
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 p-1">
+                <div className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {filteredWallets.map((wallet) => {
                         const Icon = getIconByName('dollar-sign');
                         const cardColor = getColorHex(wallet.color || 'zinc');
@@ -173,7 +173,7 @@ export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsCon
                                         </Badge>
                                     </div>
                                 )}
-                                <CardContent className="p-6">
+                                <CardContent className="p-4">
                                     <div className="flex items-center gap-4">
                                         <div
                                             className="flex h-10 w-10 items-center justify-center rounded-full flex-shrink-0"

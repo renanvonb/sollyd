@@ -30,7 +30,7 @@ interface ColorPickerProps {
 
 export function ColorPicker({ value, onChange }: ColorPickerProps) {
     return (
-        <div className="grid grid-cols-9 gap-2">
+        <div className="grid grid-cols-6 sm:grid-cols-9 gap-2">
             {COLORS.map((color) => {
                 const isSelected = value === color.name;
 
@@ -40,7 +40,7 @@ export function ColorPicker({ value, onChange }: ColorPickerProps) {
                         type="button"
                         onClick={() => onChange(color.name)}
                         className={cn(
-                            'h-10 w-10 rounded-lg transition-all',
+                            'w-full aspect-square rounded-lg transition-all',
                             color.bg,
                             isSelected && 'ring-2 ring-zinc-950 ring-offset-2'
                         )}

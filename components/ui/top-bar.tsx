@@ -1,13 +1,12 @@
 'use client';
 
-import { PanelLeftClose, PanelLeftOpen, Eye, EyeOff, Sun, Moon, Menu } from 'lucide-react';
+import { PanelLeftClose, PanelLeftOpen, Eye, EyeOff, Menu } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { useSidebar } from '@/hooks/use-sidebar-state';
 import { useVisibility } from '@/hooks/use-visibility-state';
 import { Button } from '@/components/ui/button';
-import { useTheme } from "next-themes";
 
 import {
     Tooltip,
@@ -52,7 +51,6 @@ export function TopBar({
 }: TopBarProps) {
     const { isOpen, toggle } = useSidebar();
     const { isVisible, toggleVisibility } = useVisibility();
-    const { setTheme, theme } = useTheme()
 
     // Encontra o nome da tab ativa
     const activeTabLabel = tabs.find(tab => tab.id === activeTab)?.label || moduleName;
@@ -61,29 +59,39 @@ export function TopBar({
     return (
         <TooltipProvider delayDuration={300}>
             {/* ── MOBILE Topbar (oculto em desktop) ── */}
-            <header className="sticky top-0 z-30 border-b border-border bg-card dark:bg-[#0a0a0a] h-14 flex-none font-sans flex md:hidden items-center justify-between px-5">
-                {/* Esquerda: símbolo + nome */}
-                <div className="flex items-center gap-2 min-w-0 flex-1 pr-2">
-                    <div className="relative h-7 w-7 shrink-0">
+            <header className="sticky top-0 z-30 border-b border-border bg-card dark:bg-[#0a0a0a] h-14 flex-none font-sans flex md:hidden items-center justify-between px-4 relative">
+                {/* Esquerda: ocultar valores */}
+                <div className="flex items-center gap-1">
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                        onClick={toggleVisibility}
+                        aria-label={isVisible ? "Ocultar valores" : "Mostrar valores"}
+                    >
+                        {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                    </Button>
+                </div>
+
+                {/* Centro: símbolo da Sollyd */}
+                <div className="absolute left-1/2 -translate-x-1/2">
+                    <div className="relative h-6 w-6">
                         <Image
                             src="/brand/symbol.png"
-                            alt=""
+                            alt="Sollyd"
                             fill
                             className="object-contain"
                             style={{ filter: 'brightness(0) saturate(100%) invert(93%) sepia(46%) saturate(1272%) hue-rotate(8deg) brightness(104%) contrast(98%)' }}
                         />
                     </div>
-                    <span className="font-jakarta font-bold text-lg text-foreground tracking-tight truncate">
-                        Sollyd
-                    </span>
                 </div>
 
-                {/* Direita: menu */}
+                {/* Direita: menu hamburguer */}
                 <Button
                     variant="ghost"
                     size="icon"
                     onClick={toggle}
-                    className="shrink-0 text-muted-foreground hover:text-foreground"
+                    className="h-9 w-9 text-muted-foreground hover:text-foreground"
                     aria-label="Abrir menu"
                 >
                     <Menu className="h-5 w-5" />
@@ -171,24 +179,7 @@ export function TopBar({
                                 </TooltipContent>
                             </Tooltip>
 
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="text-muted-foreground hover:text-foreground"
-                                        onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                                    >
-                                        <Sun className="h-5 w-5 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                                        <Moon className="absolute h-5 w-5 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                                        <span className="sr-only">Alternar tema</span>
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>Alternar tema</p>
-                                </TooltipContent>
-                            </Tooltip>
-
+    
 
                         </div>
                     )}
