@@ -1,3 +1,5 @@
+<img width="978" height="550" alt="case-readme-sollyd" src="https://github.com/user-attachments/assets/d528577e-5199-4474-8c20-bdbf1062216e" />
+
 # Sollyd SaaS - Project Documentation & AI Guidelines
 
 ## 1. Project Overview
