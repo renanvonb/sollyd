@@ -14,9 +14,12 @@ export interface CalendarProps {
     showOutsideDays?: boolean
     mode?: "default" | "single" | "multiple" | "range"
     selected?: Date | DateRange | undefined
-    onSelect?: (date: Date | DateRange | undefined) => void
+    onSelect?: (date?: any) => void
     disabled?: (date: Date) => boolean
     initialFocus?: boolean
+    numberOfMonths?: number
+    locale?: any
+    defaultMonth?: Date
 }
 
 // Helpers e Constantes Compartilhadas

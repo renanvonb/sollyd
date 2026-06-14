@@ -87,7 +87,9 @@ export const columns: ColumnDef<Transaction>[] = [
                         />
                     </TruncatedTextWithTooltip>
                     {row.original.is_recurring && (
-                        <Repeat className="h-3 w-3 shrink-0 text-blue-500" title="Recorrente" />
+                        <span title="Recorrente" className="inline-flex shrink-0">
+                            <Repeat className="h-3 w-3 text-blue-500" />
+                        </span>
                     )}
                 </div>
             )

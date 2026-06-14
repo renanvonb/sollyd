@@ -301,7 +301,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                             category_id: transaction.category_id || "",
                             subcategory_id: transaction.subcategory_id || "",
                             date: transaction.date ? parseISO(transaction.date) : new Date(),
-                            realized_at: transaction.realized_at ? parseISO(transaction.realized_at) : undefined,
+                            realized_at: (transaction as any).realized_at ? parseISO((transaction as any).realized_at) : undefined,
                             competence: transaction.competence ? parseISO(transaction.competence) : startOfMonth(new Date()),
                             status: transaction.status === 'Realizado' ? 'Realizado' : 'Pendente',
                         })
