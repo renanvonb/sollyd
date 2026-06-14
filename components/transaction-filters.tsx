@@ -44,7 +44,6 @@ export function TransactionFilters({
             >
                 <TabsList>
                     <TabsTrigger value="dia">Dia</TabsTrigger>
-                    <TabsTrigger value="semana">Semana</TabsTrigger>
                     <TabsTrigger value="mes">Mês</TabsTrigger>
                     <TabsTrigger value="ano">Ano</TabsTrigger>
                 </TabsList>

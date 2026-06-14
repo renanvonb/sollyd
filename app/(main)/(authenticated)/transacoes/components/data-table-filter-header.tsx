@@ -7,13 +7,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
-    DropdownMenu,
-    DropdownMenuContent,
-    DropdownMenuItem,
-    DropdownMenuSeparator,
-    DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
-import {
     Popover,
     PopoverContent,
     PopoverTrigger,
@@ -44,9 +37,8 @@ export function DataTableFilterHeader<TData, TValue>({
                     <PopoverTrigger asChild>
                         <Button
                             variant="ghost"
-                            size="sm"
                             className={cn(
-                                "-ml-3 h-7 px-2 text-xs md:h-8 md:px-3 md:text-sm data-[state=open]:bg-accent",
+                                "-ml-3 h-7 px-2 text-xs md:h-10 md:px-4 md:text-sm data-[state=open]:bg-accent",
                                 filterValue && "text-primary"
                             )}
                         >
@@ -65,13 +57,12 @@ export function DataTableFilterHeader<TData, TValue>({
                                     placeholder={`Filtrar ${title.toLowerCase()}...`}
                                     value={filterValue ?? ""}
                                     onChange={(e) => column.setFilterValue(e.target.value || undefined)}
-                                    className="h-8 pl-8 pr-8"
+                                    className="h-10 pl-8 pr-8"
                                 />
                                 {filterValue && (
                                     <Button
                                         variant="ghost"
-                                        size="sm"
-                                        className="absolute right-0 top-0 h-8 w-8 p-0"
+                                        className="absolute right-0 top-0 h-10 w-10 p-0"
                                         onClick={() => {
                                             column.setFilterValue(undefined)
                                             setOpen(false)
@@ -88,16 +79,19 @@ export function DataTableFilterHeader<TData, TValue>({
         )
     }
 
-    // Se há opções definidas, usar dropdown
+    // Se há opções definidas, usar popover com busca
+    const filtered = options.filter(o =>
+        o.label.toLowerCase().includes(searchValue.toLowerCase())
+    )
+
     return (
         <div className={cn("flex items-center", className)}>
-            <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+            <Popover open={open} onOpenChange={setOpen}>
+                <PopoverTrigger asChild>
                     <Button
                         variant="ghost"
-                        size="sm"
                         className={cn(
-                            "-ml-3 h-7 px-2 text-xs md:h-8 md:px-3 md:text-sm data-[state=open]:bg-accent",
+                            "-ml-3 h-7 px-2 text-xs md:h-10 md:px-4 md:text-sm data-[state=open]:bg-accent",
                             filterValue && "text-primary"
                         )}
                     >
@@ -107,28 +101,44 @@ export function DataTableFilterHeader<TData, TValue>({
                             filterValue ? "opacity-100" : "opacity-50"
                         )} />
                     </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="start" className="min-w-[150px]">
-                    <DropdownMenuItem
-                        onClick={() => column.setFilterValue(undefined)}
-                        className="justify-between"
-                    >
-                        Todos
-                        {!filterValue && <Check className="h-4 w-4" />}
-                    </DropdownMenuItem>
-                    <DropdownMenuSeparator />
-                    {options.map((option) => (
-                        <DropdownMenuItem
-                            key={option.value}
-                            onClick={() => column.setFilterValue(option.value)}
-                            className="justify-between"
+                </PopoverTrigger>
+                <PopoverContent className="w-[220px] p-1" align="start">
+                    <div className="relative px-1 pb-1">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                        <Input
+                            placeholder="Buscar..."
+                            value={searchValue}
+                            onChange={(e) => setSearchValue(e.target.value)}
+                            className="h-9 pl-8 text-sm"
+                        />
+                    </div>
+                    <div className="max-h-[260px] overflow-y-auto">
+                        <button
+                            onClick={() => { column.setFilterValue(undefined); setOpen(false) }}
+                            className="relative flex w-full cursor-pointer select-none items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
                         >
-                            {option.label}
-                            {filterValue === option.value && <Check className="h-4 w-4" />}
-                        </DropdownMenuItem>
-                    ))}
-                </DropdownMenuContent>
-            </DropdownMenu>
+                            <span className={cn(!filterValue && "font-medium")}>Todos</span>
+                            {!filterValue && <Check className="h-4 w-4 shrink-0" />}
+                        </button>
+                        {filtered.length === 0 ? (
+                            <div className="px-2 py-6 text-center text-sm text-muted-foreground">
+                                Nenhum resultado
+                            </div>
+                        ) : (
+                            filtered.map((option) => (
+                                <button
+                                    key={option.value}
+                                    onClick={() => { column.setFilterValue(option.value); setOpen(false) }}
+                                    className="relative flex w-full cursor-pointer select-none items-center justify-between gap-2 rounded-sm px-2 py-1.5 text-sm outline-none transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground"
+                                >
+                                    <span className={cn("truncate", filterValue === option.value && "font-medium")}>{option.label}</span>
+                                    {filterValue === option.value && <Check className="h-4 w-4 shrink-0" />}
+                                </button>
+                            ))
+                        )}
+                    </div>
+                </PopoverContent>
+            </Popover>
         </div>
     )
 }

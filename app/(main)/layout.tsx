@@ -33,6 +33,8 @@ export const viewport: Viewport = {
     themeColor: '#0d0d0d',
     width: 'device-width',
     initialScale: 1,
+    maximumScale: 1,
+    viewportFit: 'cover',
 };
 
 import { ThemeProvider } from "@/components/theme-provider";

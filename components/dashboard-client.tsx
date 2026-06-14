@@ -9,9 +9,8 @@ import { ptBR } from "date-fns/locale"
 
 import { TransactionSummaryCards } from "@/components/transaction-summary-cards"
 import { TimeRange } from "@/types/time-range"
-import { Eye, EyeOff, Search } from "lucide-react"
+import { Eye, EyeOff } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { AdaptiveDatePicker } from "@/components/ui/adaptive-date-picker"
 import { useVisibility } from "@/hooks/use-visibility-state"
 
@@ -42,7 +41,6 @@ interface DashboardClientProps {
 
 const periodTabs = [
     { id: 'dia', label: 'Dia' },
-    { id: 'semana', label: 'Semana' },
     { id: 'mes', label: 'Mês' },
     { id: 'ano', label: 'Ano' },
     { id: 'custom', label: 'Período' },
@@ -54,20 +52,8 @@ export default function DashboardClient({ initialData, userName, metrics }: Dash
     const [isPending, startTransition] = useTransition()
     const { isVisible, toggleVisibility } = useVisibility()
 
-    const [searchValue, setSearchValue] = React.useState(searchParams.get('q') || "")
-
-    React.useEffect(() => {
-        const timer = setTimeout(() => {
-            const params = new URLSearchParams(searchParams.toString())
-            if (searchValue) params.set('q', searchValue)
-            else params.delete('q')
-            router.push(`?${params.toString()}`, { scroll: false })
-        }, 300)
-        return () => clearTimeout(timer)
-    }, [searchValue, router, searchParams])
-
     const range = (searchParams.get('range') as TimeRange) || 'mes'
-    const searchQuery = searchParams.get('q')?.toLowerCase() || ""
+    const searchQuery = ""
     const statusFilter = searchParams.get('status') || "Realizado"
 
     // Lista de anos disponíveis calculada a partir dos dados (apenas anos com transações)
@@ -340,7 +326,7 @@ export default function DashboardClient({ initialData, userName, metrics }: Dash
     }, [filteredData, date, range, selectedYear]);
 
     return (
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div className="h-dvh flex flex-col overflow-hidden">
             <TopBar
                 moduleName="Dashboard"
                 tabs={periodTabs}
@@ -349,12 +335,12 @@ export default function DashboardClient({ initialData, userName, metrics }: Dash
                 variant="simple"
             />
 
-            <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full flex-1 flex flex-col pt-5 md:pt-8 pb-5 md:pb-8 gap-5 md:gap-8 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 min-h-0 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
                 {/* Page Header */}
                 <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between flex-none">
                     {/* Título — isolado no topo em mobile */}
                     <div>
-                        <h1 className="text-2xl md:text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta">
+                        <h1 className="text-2xl font-semibold text-foreground font-jakarta">
                             Olá, {userName.split(' ')[0]}!
                         </h1>
                     </div>
@@ -382,16 +368,6 @@ export default function DashboardClient({ initialData, userName, metrics }: Dash
                             </Select>
                         </div>
 
-                        {/* Busca — largura total em mobile */}
-                        <div className="relative w-full md:w-[250px]">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Buscar"
-                                className="pl-9 h-10 font-inter w-full"
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                        </div>
                     </div>
                 </div>
 

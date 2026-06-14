@@ -36,6 +36,7 @@ import {
 } from '@/lib/supabase/cadastros';
 import { ModuleCardsSkeleton } from '@/components/ui/skeletons';
 import { PayeeForm } from './payee-form';
+import { useVisibility } from '@/hooks/use-visibility-state';
 
 
 
@@ -45,9 +46,10 @@ export interface PayersContentProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     searchQuery: string;
+    onCountChange?: (count: number) => void;
 }
 
-export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersContentProps) {
+export function PayersContent({ isOpen, onOpenChange, searchQuery, onCountChange }: PayersContentProps) {
     const router = useRouter();
     const [payers, setPayers] = useState<Payee[]>([]);
     const [loading, setLoading] = useState(true);
@@ -55,6 +57,7 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
     const [editingPayer, setEditingPayer] = useState<Payee | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const { isVisible } = useVisibility();
 
     const filteredPayers = payers.filter(payer => {
         const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -92,6 +95,10 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
     useEffect(() => {
         fetchPayers();
     }, []);
+
+    useEffect(() => {
+        onCountChange?.(payers.length)
+    }, [payers])
 
     const handleDelete = async () => {
         if (!deletingId) return;
@@ -152,7 +159,7 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {filteredPayers.map((payer) => {
                         const IconComponent = getIconByName('arrow-up-right');
                         const colorClass = getColorClass('green');
@@ -160,7 +167,7 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
                         return (
                             <Card
                                 key={payer.id}
-                                className="hover:bg-accent/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-border relative overflow-hidden"
+                                className="hover:bg-accent/50 transition-all duration-300 cursor-pointer group border-border relative overflow-hidden"
                                 onClick={() => {
                                     setEditingPayer(payer);
                                     onOpenChange(true);
@@ -176,7 +183,7 @@ export function PayersContent({ isOpen, onOpenChange, searchQuery }: PayersConte
                                                 <HighlightText text={payer.name} highlight={searchQuery} />
                                             </h3>
                                             <p className="text-sm text-muted-foreground font-inter truncate">
-                                                {payer.transactions?.[0]?.count || 0} transações
+                                                {isVisible ? (payer.transactions?.[0]?.count || 0) : '••'} transações
                                             </p>
                                         </div>
                                     </div>

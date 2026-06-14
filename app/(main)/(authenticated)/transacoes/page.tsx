@@ -6,18 +6,23 @@ import { DateRange } from "react-day-picker"
 import { getTransactions } from "@/app/actions/transactions-fetch"
 import { deleteTransaction, markAsPaid, markAsPending } from "@/app/actions/transactions"
 import { TimeRange } from "@/types/time-range"
-import { normalizeSearch } from "@/lib/utils"
+import { normalizeSearch, cn } from "@/lib/utils"
 import { TopBar } from "@/components/ui/top-bar"
 import { TransactionsHeader } from "@/components/transactions/transactions-header"
 import { TransactionsContent } from "@/components/transactions/transactions-content"
 import { TransactionForm } from "@/components/transaction-form"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { AdaptiveDatePicker } from "@/components/ui/adaptive-date-picker"
+import { useVisibility } from "@/hooks/use-visibility-state"
+import { Search, Plus, Eye, EyeOff } from "lucide-react"
 import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogDescription,
-} from "@/components/ui/dialog"
+    Sheet,
+    SheetContent,
+    SheetHeader,
+    SheetTitle,
+} from "@/components/ui/sheet"
 import {
     AlertDialog,
     AlertDialogAction,
@@ -31,10 +36,10 @@ import {
 import { toast } from "sonner"
 import type { Transaction } from "@/types/transaction"
 import { format, parseISO } from "date-fns"
+import { ptBR } from "date-fns/locale"
 
 const periodTabs = [
     { id: 'dia', label: 'Dia' },
-    { id: 'semana', label: 'Semana' },
     { id: 'mes', label: 'Mês' },
     { id: 'ano', label: 'Ano' },
 ]
@@ -42,6 +47,7 @@ const periodTabs = [
 export default function TransactionsPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
+    const { isVisible, toggleVisibility } = useVisibility()
 
     // State
     const [data, setData] = React.useState<any[]>([])
@@ -253,6 +259,27 @@ export default function TransactionsPage() {
         return new Date();
     }, [from]);
 
+    const periodTitle = React.useMemo(() => {
+        const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1)
+        if (range === 'dia') {
+            const weekday = cap(format(referenceDate, "EEEE", { locale: ptBR }).replace("-feira", ""))
+            return `${weekday}, ${format(referenceDate, "dd 'de' MMM yyyy", { locale: ptBR })}`
+        }
+        if (range === 'ano') {
+            return format(referenceDate, "yyyy", { locale: ptBR })
+        }
+        return cap(format(referenceDate, "MMMM 'de' yyyy", { locale: ptBR }))
+    }, [range, referenceDate])
+
+    const periodNoun = range === 'dia' ? 'dia' : range === 'ano' ? 'ano' : 'mês'
+    const isSingular = filteredData.length === 1
+    const statusAdjective = statusFilter === 'Realizado'
+        ? (isSingular ? 'realizada' : 'realizadas')
+        : statusFilter === 'Pendente'
+            ? (isSingular ? 'pendente' : 'pendentes')
+            : (isSingular ? 'registrada' : 'registradas')
+    const periodDescription = `${filteredData.length} ${isSingular ? 'transação' : 'transações'} ${statusAdjective} neste ${periodNoun}`
+
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-background">
             {/* Top Bar with Period Tabs */}
@@ -262,10 +289,38 @@ export default function TransactionsPage() {
                 activeTab={range}
                 onTabChange={handleRangeChange}
                 variant="simple"
+                rightContent={
+                    <div className="hidden md:flex items-center gap-3">
+                        <div className="relative w-[250px]">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Buscar" className="pl-9 h-10 font-inter" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
+                        </div>
+                        <div className="flex items-center h-10 rounded-md border border-input overflow-hidden">
+                            {periodTabs.map(t => (
+                                <button
+                                    key={t.id}
+                                    onClick={() => handleRangeChange(t.id)}
+                                    className={cn(
+                                        "h-10 px-4 text-sm font-inter transition-colors border-r border-input last:border-r-0",
+                                        range === t.id
+                                            ? "bg-accent text-foreground"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                    )}
+                                >
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
+                        <AdaptiveDatePicker mode={range as any} value={dateRange} onChange={handleDateChange} className="w-[120px]" />
+                        <Button variant="outline" size="icon" className="text-muted-foreground hover:text-foreground" onClick={toggleVisibility}>
+                            {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </Button>
+                    </div>
+                }
             />
 
             {/* Main Content Wrapper — padding alinhado ao dashboard */}
-            <div className="max-w-[1440px] mx-auto px-4 md:px-8 w-full flex-1 flex flex-col pb-4 md:pb-8 gap-5 md:gap-8 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
 
                 <TransactionsHeader
                     title="Transações"
@@ -280,6 +335,41 @@ export default function TransactionsPage() {
                     onStatusFilterChange={setStatusFilter}
                 />
 
+                {/* Desktop: título + controles */}
+                <div className="hidden md:flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                        <h2 className="text-2xl font-semibold text-foreground font-jakarta">{periodTitle}</h2>
+                        <span className="w-px h-5 bg-border" />
+                        <p className="text-sm text-muted-foreground font-inter">{periodDescription}</p>
+                    </div>
+                    <div className="flex items-center gap-3">
+                        <div className="flex items-center h-10 rounded-md border border-input overflow-hidden">
+                            {[
+                                { id: "all", label: "Todas" },
+                                { id: "Realizado", label: "Realizadas" },
+                                { id: "Pendente", label: "Pendentes" },
+                            ].map(s => (
+                                <button
+                                    key={s.id}
+                                    onClick={() => setStatusFilter(s.id)}
+                                    className={cn(
+                                        "h-10 px-4 text-sm font-inter transition-colors border-r border-input last:border-r-0",
+                                        statusFilter === s.id
+                                            ? "bg-accent text-foreground"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                    )}
+                                >
+                                    {s.label}
+                                </button>
+                            ))}
+                        </div>
+                        <Button onClick={() => handleAddClick("expense")} className="font-inter">
+                            <Plus className="h-4 w-4" />
+                            Adicionar
+                        </Button>
+                    </div>
+                </div>
+
                 <TransactionsContent
                     data={filteredData}
                     isPending={loading}
@@ -293,16 +383,13 @@ export default function TransactionsPage() {
                     onAddClick={handleAddClick}
                 />
 
-                {/* Dialog Nova Transação */}
-                <Dialog open={isNewSheetOpen} onOpenChange={setIsNewSheetOpen}>
-                    <DialogContent
-                        className="sm:max-w-[480px] flex flex-col overflow-hidden h-[85dvh] sm:h-auto sm:max-h-[90dvh]"
-                        onInteractOutside={(e) => e.preventDefault()}
-                        onEscapeKeyDown={(e) => e.preventDefault()}
+                {/* Sheet Nova Transação */}
+                <Sheet open={isNewSheetOpen} onOpenChange={setIsNewSheetOpen}>
+                    <SheetContent
+                        side="right"
+                        className="w-full sm:max-w-[480px] p-0 flex flex-col"
                     >
-                        <DialogHeader>
-                            <DialogTitle className="font-jakarta">Nova transação</DialogTitle>
-                        </DialogHeader>
+                        <SheetTitle className="sr-only">Nova transação</SheetTitle>
                         <TransactionForm
                             open={isNewSheetOpen}
                             defaultType={newTransactionType}
@@ -310,22 +397,19 @@ export default function TransactionsPage() {
                             onSuccess={handleSuccess}
                             onCancel={() => setIsNewSheetOpen(false)}
                         />
-                    </DialogContent>
-                </Dialog>
+                    </SheetContent>
+                </Sheet>
 
-                {/* Dialog Editar Transação */}
-                <Dialog open={isEditSheetOpen} onOpenChange={(open) => {
+                {/* Sheet Editar Transação */}
+                <Sheet open={isEditSheetOpen} onOpenChange={(open) => {
                     setIsEditSheetOpen(open)
                     if (!open) setSelectedTransaction(null)
                 }}>
-                    <DialogContent
-                        className="sm:max-w-[480px] flex flex-col overflow-hidden h-[85dvh] sm:h-auto sm:max-h-[90dvh]"
-                        onInteractOutside={(e) => e.preventDefault()}
-                        onEscapeKeyDown={(e) => e.preventDefault()}
+                    <SheetContent
+                        side="right"
+                        className="w-full sm:max-w-[480px] p-0 flex flex-col"
                     >
-                        <DialogHeader>
-                            <DialogTitle className="font-jakarta">Editar transação</DialogTitle>
-                        </DialogHeader>
+                        <SheetTitle className="sr-only">Editar transação</SheetTitle>
                         <TransactionForm
                             key={selectedTransaction?.id}
                             open={isEditSheetOpen}
@@ -333,8 +417,8 @@ export default function TransactionsPage() {
                             onSuccess={handleSuccess}
                             onCancel={() => setIsEditSheetOpen(false)}
                         />
-                    </DialogContent>
-                </Dialog>
+                    </SheetContent>
+                </Sheet>
 
                 {/* Dialog Confirmação de Exclusão */}
                 <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>

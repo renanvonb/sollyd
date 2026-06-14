@@ -30,6 +30,7 @@ export interface Category {
     type?: 'Receita' | 'Despesa';
     color?: string;
     icon?: string;
+    is_default?: boolean;
     created_at: string;
 }
 
@@ -38,6 +39,7 @@ export interface Subcategory {
     name: string;
     category_id: string;
     color?: string;
+    is_default?: boolean;
     created_at: string;
 }
 
@@ -46,6 +48,7 @@ export interface Classification {
     name: string;
     description?: string;
     color: string;
+    is_default?: boolean;
     created_at: string;
 }
 
@@ -77,6 +80,10 @@ export interface Transaction {
     competence?: string;
     observation?: string;
     status?: string;
+    is_recurring?: boolean;
+    recurring_frequency?: 'monthly' | 'yearly';
+    recurring_occurrences?: number;
+    recurring_group_id?: string;
     created_at: string;
     updated_at: string;
     // Joined relations
@@ -105,4 +112,7 @@ export interface CreateTransactionInput {
     competence?: string;
     observation?: string;
     status?: string;
+    is_recurring?: boolean;
+    recurring_frequency?: 'monthly' | 'yearly';
+    recurring_occurrences?: number;
 }

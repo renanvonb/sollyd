@@ -196,16 +196,17 @@ export default function TransactionsClient({ initialData }: TransactionsClientPr
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-background selection:bg-neutral-800">
             {/* Wrapper Principal Sagrado */}
-            <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full flex-1 flex flex-col pt-5 md:pt-8 pb-5 md:pb-8 gap-5 md:gap-6 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
 
                 {/* Header de Página (Responsivo) */}
                 <div className="flex flex-wrap md:flex-nowrap items-center justify-between flex-none gap-y-3 gap-x-2 w-full">
                     {/* 1. Título */}
-                    <div className="order-1 min-w-0 shrink">
-                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
+                    <div className="order-1 flex items-center gap-3 min-w-0 shrink">
+                        <h1 className="text-2xl font-semibold text-foreground font-jakarta truncate">
                             Transações
                         </h1>
-                        <p className="text-muted-foreground mt-1 font-sans text-sm font-inter hidden md:block">
+                        <span className="w-px h-5 bg-border shrink-0 hidden md:block" />
+                        <p className="text-sm text-muted-foreground font-inter hidden md:block">
                             Gerencie e acompanhe suas movimentações financeiras.
                         </p>
                     </div>
@@ -214,10 +215,10 @@ export default function TransactionsClient({ initialData }: TransactionsClientPr
                     <div className="order-2 flex items-center gap-2 overflow-x-auto pb-1 md:pb-0 scrollbar-hide ml-auto shrink max-w-[55vw] md:max-w-none">
                         {/* Status Tabs */}
                         <Tabs value={statusFilter} onValueChange={handleStatusFilterChange} className="h-10 shrink-0">
-                            <TabsList className="bg-neutral-900 border border-neutral-800 h-10">
-                                <TabsTrigger value="all" className="h-8 data-[state=active]:bg-neutral-800 data-[state=active]:text-neutral-50 font-inter">Todas</TabsTrigger>
-                                <TabsTrigger value="Realizado" className="h-8 data-[state=active]:bg-neutral-800 data-[state=active]:text-neutral-50 font-inter">Realizadas</TabsTrigger>
-                                <TabsTrigger value="Pendente" className="h-8 data-[state=active]:bg-neutral-800 data-[state=active]:text-neutral-50 font-inter">Pendentes</TabsTrigger>
+                            <TabsList>
+                                <TabsTrigger value="all" className="font-inter">Todas</TabsTrigger>
+                                <TabsTrigger value="Realizado" className="font-inter">Realizadas</TabsTrigger>
+                                <TabsTrigger value="Pendente" className="font-inter">Pendentes</TabsTrigger>
                             </TabsList>
                         </Tabs>
 
@@ -228,7 +229,6 @@ export default function TransactionsClient({ initialData }: TransactionsClientPr
                             </SelectTrigger>
                             <SelectContent className='bg-neutral-900 border-neutral-800 text-neutral-50'>
                                 <SelectItem value="dia">Hoje</SelectItem>
-                                <SelectItem value="semana">Semana</SelectItem>
                                 <SelectItem value="mes">Mês</SelectItem>
                                 <SelectItem value="ano">Ano</SelectItem>
                                 <SelectItem value="custom">Personalizar</SelectItem>
@@ -241,7 +241,7 @@ export default function TransactionsClient({ initialData }: TransactionsClientPr
                                 mode={range}
                                 value={date}
                                 onChange={handleDateChange}
-                                className="h-10 w-10 px-0 justify-center md:w-auto md:justify-start md:px-3 [&>span]:hidden md:[&>span]:inline md:[&>svg]:mr-2"
+                                className="h-10 w-10 px-0 justify-center md:w-auto md:justify-start md:px-4 [&>span]:hidden md:[&>span]:inline md:[&>svg]:mr-2"
                             />
                         </div>
 
@@ -265,7 +265,7 @@ export default function TransactionsClient({ initialData }: TransactionsClientPr
                     </div>
 
                     {/* 3. Search Bar (Linha debaixo no mobile, direita no desktop) */}
-                    <div className="order-3 relative w-full md:w-[200px] shrink-0 md:ml-3">
+                    <div className="order-3 relative w-full md:w-[250px] shrink-0 md:ml-3">
                         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-neutral-400" />
                         <Input
                             placeholder="Buscar transação..."

@@ -45,7 +45,7 @@ export function YearPicker({ value, onChange, className }: YearPickerProps) {
                 <Button
                     variant="outline"
                     className={cn(
-                        "w-[120px] justify-start text-left font-inter font-normal px-3",
+                        "w-[120px] justify-start text-left font-inter font-normal px-4",
                         !value && "text-muted-foreground",
                         className
                     )}

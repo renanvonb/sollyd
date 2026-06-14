@@ -34,19 +34,22 @@ import { getIconByName } from './icon-picker';
 import { getColorHex } from './color-picker';
 import { ModuleCardsSkeleton } from '@/components/ui/skeletons';
 import { Flag } from 'lucide-react';
+import { useVisibility } from '@/hooks/use-visibility-state';
 
 interface ClassificationsContentProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     searchQuery: string;
+    onCountChange?: (count: number) => void;
 }
 
-export function ClassificationsContent({ isOpen, onOpenChange, searchQuery }: ClassificationsContentProps) {
+export function ClassificationsContent({ isOpen, onOpenChange, searchQuery, onCountChange }: ClassificationsContentProps) {
     const [classifications, setClassifications] = useState<Classification[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingItem, setEditingItem] = useState<Classification | null>(null);
     const [deleteItem, setDeleteItem] = useState<Classification | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const { isVisible } = useVisibility();
 
     const filteredClassifications = classifications.filter(item => {
         const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -62,6 +65,10 @@ export function ClassificationsContent({ isOpen, onOpenChange, searchQuery }: Cl
     useEffect(() => {
         fetchClassifications();
     }, []);
+
+    useEffect(() => {
+        onCountChange?.(classifications.length)
+    }, [classifications])
 
     const fetchClassifications = async () => {
         try {
@@ -138,14 +145,14 @@ export function ClassificationsContent({ isOpen, onOpenChange, searchQuery }: Cl
                     className="flex-1 bg-card border-border border-dashed"
                 />
             ) : (
-                <div className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {filteredClassifications.map((item) => {
                         const Icon = getIconByName(item.icon || 'flag', Flag);
                         const cardColor = getColorHex(item.color || 'zinc');
                         return (
                             <Card
                                 key={item.id}
-                                className="group cursor-pointer hover:bg-accent/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 border-border"
+                                className="group cursor-pointer hover:bg-accent/50 transition-all duration-300 border-border"
                                 onClick={() => {
                                     setEditingItem(item);
                                     onOpenChange(true);
@@ -164,7 +171,7 @@ export function ClassificationsContent({ isOpen, onOpenChange, searchQuery }: Cl
                                                 <HighlightText text={item.name} highlight={searchQuery} />
                                             </h3>
                                             <p className="text-sm text-muted-foreground font-inter truncate">
-                                                {item.transactions?.[0]?.count || 0} transações
+                                                {isVisible ? (item.transactions?.[0]?.count || 0) : '••'} transações
                                             </p>
                                         </div>
                                     </div>
@@ -200,7 +207,7 @@ export function ClassificationsContent({ isOpen, onOpenChange, searchQuery }: Cl
                             fetchClassifications();
                         }}
                         onCancel={() => onOpenChange(false)}
-                        onDelete={editingItem ? () => {
+                        onDelete={editingItem && !editingItem.is_default ? () => {
                             setDeleteItem(editingItem);
                             onOpenChange(false);
                         } : undefined}

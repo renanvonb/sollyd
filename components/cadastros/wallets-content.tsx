@@ -39,20 +39,23 @@ import { WalletForm } from './wallet-form';
 import { getIconByName } from './icon-picker';
 import { getColorHex } from './color-picker';
 import { ModuleCardsSkeleton } from '@/components/ui/skeletons';
+import { useVisibility } from '@/hooks/use-visibility-state';
 
 interface WalletsContentProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     searchQuery: string;
+    onCountChange?: (count: number) => void;
 }
 
-export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsContentProps) {
+export function WalletsContent({ isOpen, onOpenChange, searchQuery, onCountChange }: WalletsContentProps) {
     const [wallets, setWallets] = useState<Wallet[]>([]);
     const [loading, setLoading] = useState(true);
     const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
     const [editingWallet, setEditingWallet] = useState<Wallet | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const { isVisible } = useVisibility();
 
     const filteredWallets = wallets.filter(wallet => {
         const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -83,6 +86,10 @@ export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsCon
     useEffect(() => {
         fetchWallets();
     }, []);
+
+    useEffect(() => {
+        onCountChange?.(wallets.length)
+    }, [wallets])
 
     // Clear form when dialog closes
     useEffect(() => {
@@ -140,7 +147,7 @@ export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsCon
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid gap-2 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                     {filteredWallets.map((wallet) => {
                         const Icon = getIconByName('dollar-sign');
                         const cardColor = getColorHex(wallet.color || 'zinc');
@@ -148,7 +155,7 @@ export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsCon
                         return (
                             <Card
                                 key={wallet.id}
-                                className="group cursor-pointer hover:bg-accent/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 border-border relative overflow-hidden"
+                                className="group cursor-pointer hover:bg-accent/50 transition-all duration-300 border-border relative overflow-hidden"
                                 onClick={() => {
                                     setEditingWallet(wallet);
                                     onOpenChange(true);
@@ -188,7 +195,7 @@ export function WalletsContent({ isOpen, onOpenChange, searchQuery }: WalletsCon
                                                 <HighlightText text={wallet.name} highlight={searchQuery} />
                                             </h3>
                                             <p className="text-sm text-muted-foreground truncate font-inter">
-                                                {wallet.transactions?.[0]?.count || 0} transações
+                                                {isVisible ? (wallet.transactions?.[0]?.count || 0) : '••'} transações
                                             </p>
                                         </div>
                                     </div>

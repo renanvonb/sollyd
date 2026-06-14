@@ -10,18 +10,12 @@ export default function OrcamentosPage() {
     return (
         <div className="flex-1 flex flex-col overflow-hidden bg-background">
             <TopBar moduleName="Orçamentos" variant="simple" />
-            <div className="max-w-[1440px] mx-auto px-8 w-full flex-1 flex flex-col pt-8 pb-8 gap-8 overflow-hidden">
-                <div className="flex items-center justify-between flex-none px-1">
-                    <div className="flex items-center gap-3">
-                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta">
-                            Orçamentos
-                        </h1>
-                        <Badge variant="secondary" className="font-sans mt-1.5">Em breve</Badge>
-                    </div>
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
+                <div className="flex items-center justify-end flex-none">
                     <div className="flex items-center gap-3 font-sans justify-end flex-wrap">
-                        <Button disabled className="font-inter font-medium opacity-50 cursor-not-allowed">
-                            <Plus className="h-4 w-4 mr-2" />
-                            Adicionar
+                        <Button disabled className="h-10 w-10 shrink-0 p-0 font-inter font-medium opacity-50 cursor-not-allowed md:w-auto md:px-4 md:gap-0">
+                            <Plus className="h-4 w-4 md:mr-2" />
+                            <span className="hidden md:inline">Adicionar</span>
                         </Button>
                     </div>
                 </div>

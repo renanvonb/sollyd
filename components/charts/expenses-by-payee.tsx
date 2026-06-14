@@ -100,7 +100,7 @@ export function ExpensesByPayeeChart({ data, title = "Beneficiários", periodLab
                         tickMargin={0}
                         axisLine={false}
                         width={110}
-                        tick={{ fontSize: isExpanded ? 12 : 9, textAnchor: 'start' }}
+                        tick={{ fontSize: isExpanded ? 14 : 11, textAnchor: 'start' }}
                         dx={-105}
                         tickFormatter={(value) => value.length > 25 ? `${value.slice(0, 25)}...` : value}
                     />
@@ -212,7 +212,7 @@ export function ExpensesByPayeeChart({ data, title = "Beneficiários", periodLab
                                         fill="white"
                                         textAnchor="middle"
                                         dominantBaseline="middle"
-                                        fontSize={isExpanded ? 12 : 9}
+                                        fontSize={isExpanded ? 14 : 11}
                                         fontWeight={500}
                                         style={{ pointerEvents: 'none', opacity, transition: 'opacity 0.3s' }}
                                     >
@@ -232,7 +232,7 @@ export function ExpensesByPayeeChart({ data, title = "Beneficiários", periodLab
     return (
         <Dialog>
             <Card className="h-full flex flex-col hover:shadow-md transition-all">
-                <CardHeader className="border-b shrink-0 flex flex-row items-center justify-between px-4 md:px-6 py-4 space-y-0 group">
+                <CardHeader className="shrink-0 flex flex-row items-center justify-between px-4 md:px-6 py-4 space-y-0 group">
                     <div className="flex items-center gap-2">
                         {hasData ? (
                             <DialogTrigger asChild>

@@ -32,19 +32,22 @@ export function PageShell({
     return (
         <div className="flex-1 flex flex-col overflow-hidden">
             {/* Wrapper Principal Sagrado (Áreas C, D e E) */}
-            <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full flex-1 flex flex-col pt-5 md:pt-8 pb-5 md:pb-8 gap-5 md:gap-6 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
 
                 {/* Header de Página (Área C) */}
                 <div className="flex flex-row items-center justify-between flex-none font-sans gap-2">
                     {/* Título — sempre na mesma linha no mobile e desktop */}
-                    <div className="min-w-0">
-                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
+                    <div className="flex items-center gap-3 min-w-0">
+                        <h1 className="text-2xl font-semibold text-foreground font-jakarta truncate">
                             {title}
                         </h1>
                         {description && (
-                            <p className="text-muted-foreground mt-1 font-sans text-sm md:text-base">
-                                {description}
-                            </p>
+                            <>
+                                <span className="w-px h-5 bg-border shrink-0" />
+                                <p className="text-sm text-muted-foreground font-inter truncate">
+                                    {description}
+                                </p>
+                            </>
                         )}
                     </div>
 

@@ -17,9 +17,12 @@ interface MonthPickerProps {
     value?: Date
     onChange?: (date: Date) => void
     className?: string
+    minDate?: Date
+    placeholder?: string
+    disabled?: boolean
 }
 
-export function MonthPicker({ value, onChange, className }: MonthPickerProps) {
+export function MonthPicker({ value, onChange, className, minDate, placeholder, disabled }: MonthPickerProps) {
     const [date, setDate] = React.useState<Date>(value || new Date())
     const [open, setOpen] = React.useState(false)
 
@@ -27,6 +30,14 @@ export function MonthPicker({ value, onChange, className }: MonthPickerProps) {
         "Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
         "Jul", "Ago", "Set", "Out", "Nov", "Dez"
     ]
+
+    const isMonthDisabled = (monthIndex: number) => {
+        if (!minDate) return false
+        const minYear = minDate.getFullYear()
+        const minMonth = minDate.getMonth()
+        const curYear = date.getFullYear()
+        return curYear < minYear || (curYear === minYear && monthIndex < minMonth)
+    }
 
     const handleMonthClick = (monthIndex: number) => {
         const newDate = setMonth(date, monthIndex)
@@ -44,8 +55,9 @@ export function MonthPicker({ value, onChange, className }: MonthPickerProps) {
             <PopoverTrigger asChild>
                 <Button
                     variant="outline"
+                    disabled={disabled}
                     className={cn(
-                        "w-[120px] justify-start text-left font-inter font-normal px-3 gap-2",
+                        "w-[120px] justify-start text-left font-inter font-normal px-4 gap-2",
                         !value && "text-muted-foreground",
                         className
                     )}
@@ -55,7 +67,7 @@ export function MonthPicker({ value, onChange, className }: MonthPickerProps) {
                         {value ? (
                             format(value, "MMM/yyyy", { locale: ptBR }).replace(/^\w/, (c) => c.toUpperCase())
                         ) : (
-                            "Selecione o mês"
+                            placeholder || "Selecione o mês"
                         )}
                     </span>
                 </Button>
@@ -73,12 +85,14 @@ export function MonthPicker({ value, onChange, className }: MonthPickerProps) {
                 <div className="grid grid-cols-3 gap-2">
                     {months.map((month, index) => {
                         const isSelected = value && value.getMonth() === index && value.getFullYear() === date.getFullYear()
+                        const disabled = isMonthDisabled(index)
                         return (
                             <Button
                                 key={month}
                                 variant={isSelected ? "default" : "ghost"}
                                 className="h-9 text-sm font-inter"
                                 onClick={() => handleMonthClick(index)}
+                                disabled={disabled}
                             >
                                 {month}
                             </Button>

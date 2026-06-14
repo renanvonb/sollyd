@@ -102,14 +102,14 @@ export function ExpensesBySubcategoryChart({ data, periodLabel, onSubcategoryCli
                         axisLine={false}
                         interval={0}
                         angle={0}
-                        tick={{ fontSize: isExpanded ? 12 : 8, textAnchor: 'middle' }}
+                        tick={{ fontSize: isExpanded ? 14 : 10, textAnchor: 'middle' }}
                         tickFormatter={(value) => value.length > 8 ? `${value.slice(0, 8)}...` : value}
                     />
                     <YAxis
                         tickLine={false}
                         axisLine={false}
                         width={80}
-                        tick={{ textAnchor: 'start', fontSize: isExpanded ? 12 : 9 }}
+                        tick={{ textAnchor: 'start', fontSize: isExpanded ? 14 : 11 }}
                         tickMargin={0}
                         dx={-75}
                         tickFormatter={(value) => {
@@ -228,7 +228,7 @@ export function ExpensesBySubcategoryChart({ data, periodLabel, onSubcategoryCli
                                         fill="white"
                                         textAnchor="middle"
                                         dominantBaseline="middle"
-                                        fontSize={isExpanded ? 12 : 9}
+                                        fontSize={isExpanded ? 14 : 11}
                                         fontWeight={500}
                                         transform={`rotate(-90, ${x + width / 2}, ${y + height / 2})`}
                                         style={{ pointerEvents: 'none', opacity, transition: 'opacity 0.3s' }}
@@ -249,7 +249,7 @@ export function ExpensesBySubcategoryChart({ data, periodLabel, onSubcategoryCli
     return (
         <Dialog>
             <Card className="h-full flex flex-col hover:shadow-md transition-all">
-                <CardHeader className="border-b shrink-0 flex flex-row items-center justify-between px-4 md:px-6 py-4 space-y-0 group">
+                <CardHeader className="shrink-0 flex flex-row items-center justify-between px-4 md:px-6 py-4 space-y-0 group">
                     <div className="flex items-center gap-2">
                         {hasData ? (
                             <DialogTrigger asChild>

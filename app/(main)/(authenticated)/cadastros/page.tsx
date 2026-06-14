@@ -1,11 +1,14 @@
 'use client';
 
 import { useState } from 'react';
-import { Search, Plus } from 'lucide-react';
+import { type LucideIcon } from 'lucide-react';
+import { Search, Plus, Eye, EyeOff, Wallet, Users, UserRound, Tag, Layers } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TopBar } from '@/components/ui/top-bar';
+import { useVisibility } from '@/hooks/use-visibility-state';
+import { cn } from '@/lib/utils';
 import { WalletsContent } from '@/components/cadastros/wallets-content';
 import { PayersContent } from '@/components/cadastros/payers-content';
 import { PayeesContent } from '@/components/cadastros/payees-content';
@@ -14,12 +17,12 @@ import { ClassificationsContent } from '@/components/cadastros/classifications-c
 
 type TabType = 'carteiras' | 'pagadores' | 'beneficiarios' | 'categorias' | 'classificacoes';
 
-const tabs = [
-    { id: 'carteiras', label: 'Carteiras' },
-    { id: 'pagadores', label: 'Pagadores' },
-    { id: 'beneficiarios', label: 'Beneficiários' },
-    { id: 'categorias', label: 'Categorias' },
-    { id: 'classificacoes', label: 'Classificações' },
+const tabs: { id: string; label: string; icon: LucideIcon }[] = [
+    { id: 'carteiras', label: 'Carteiras', icon: Wallet },
+    { id: 'pagadores', label: 'Pagadores', icon: UserRound },
+    { id: 'beneficiarios', label: 'Beneficiários', icon: Users },
+    { id: 'categorias', label: 'Categorias', icon: Tag },
+    { id: 'classificacoes', label: 'Classificações', icon: Layers },
 ];
 
 const tabTitles: Record<TabType, { title: string; description: string }> = {
@@ -46,6 +49,7 @@ const tabTitles: Record<TabType, { title: string; description: string }> = {
 };
 
 export default function CadastrosPage() {
+    const { isVisible, toggleVisibility } = useVisibility();
     const [activeTab, setActiveTab] = useState<TabType>('carteiras');
     const [searchValue, setSearchValue] = useState('');
     const [categoryType, setCategoryType] = useState<'Receita' | 'Despesa'>('Despesa');
@@ -54,6 +58,23 @@ export default function CadastrosPage() {
     const [isWalletDialogOpen, setIsWalletDialogOpen] = useState(false);
     const [isPayerDialogOpen, setIsPayerDialogOpen] = useState(false);
     const [isPayeeDialogOpen, setIsPayeeDialogOpen] = useState(false);
+    const [counts, setCounts] = useState<Record<TabType, number>>({
+        carteiras: 0,
+        pagadores: 0,
+        beneficiarios: 0,
+        categorias: 0,
+        classificacoes: 0,
+    });
+
+    const countNouns: Record<TabType, [string, string]> = {
+        carteiras: ['carteira cadastrada', 'carteiras cadastradas'],
+        pagadores: ['pagador cadastrado', 'pagadores cadastrados'],
+        beneficiarios: ['beneficiário cadastrado', 'beneficiários cadastrados'],
+        categorias: ['categoria cadastrada', 'categorias cadastradas'],
+        classificacoes: ['classificação cadastrada', 'classificações cadastradas'],
+    };
+    const currentCount = counts[activeTab];
+    const currentDescription = `${currentCount} ${currentCount === 1 ? countNouns[activeTab][0] : countNouns[activeTab][1]}`;
 
     const currentTab = tabTitles[activeTab];
 
@@ -86,17 +107,48 @@ export default function CadastrosPage() {
                 activeTab={activeTab}
                 onTabChange={(tabId) => setActiveTab(tabId as TabType)}
                 variant="simple"
+                rightContent={
+                    <div className="hidden md:flex items-center gap-3">
+                        <div className="relative w-[250px]">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Buscar" className="pl-9 h-10 font-inter" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
+                        </div>
+                        <div className="flex items-center h-10 rounded-md border border-input overflow-hidden">
+                            {tabs.map(t => (
+                                <button
+                                    key={t.id}
+                                    onClick={() => setActiveTab(t.id as TabType)}
+                                    className={cn(
+                                        "h-10 px-4 text-sm font-inter transition-colors border-r border-input last:border-r-0",
+                                        activeTab === t.id
+                                            ? "bg-accent text-foreground"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                    )}
+                                >
+                                    <span className="flex items-center gap-1.5">
+                                        <t.icon className="h-3.5 w-3.5" />
+                                        {t.label}
+                                    </span>
+                                </button>
+                            ))}
+                        </div>
+                        <Button variant="outline" size="icon" className="text-muted-foreground hover:text-foreground" onClick={toggleVisibility}>
+                            {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </Button>
+                    </div>
+                }
             />
 
             {/* Wrapper Principal */}
-            <div className="max-w-[1440px] mx-auto px-4 md:px-8 w-full flex-1 flex flex-col pt-5 md:pt-8 pb-4 md:pb-8 gap-5 md:gap-8 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
 
                 {/* Page Header */}
                 <div className="flex items-center justify-between flex-none">
-                    <h1 className="text-2xl font-bold tracking-tight text-foreground font-jakarta">
-                        Cadastros
-                    </h1>
-
+                    <div className="hidden md:flex items-center gap-3">
+                        <h2 className="text-2xl font-semibold text-foreground font-jakarta">{currentTab.title}</h2>
+                        <span className="w-px h-5 bg-border" />
+                        <p className="text-sm text-muted-foreground font-inter">{currentDescription}</p>
+                    </div>
                     <div className="flex items-center gap-2 md:gap-3">
                         {activeTab === 'categorias' && (
                             <Tabs value={categoryType} onValueChange={(v) => setCategoryType(v as any)} className="w-auto hidden md:flex">
@@ -107,21 +159,10 @@ export default function CadastrosPage() {
                             </Tabs>
                         )}
 
-                        {/* Search Bar — desktop only */}
-                        <div className="relative w-[250px] hidden md:block">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-zinc-400" />
-                            <Input
-                                placeholder="Buscar"
-                                className="pl-9 h-10 font-inter w-full"
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                        </div>
-
                         {/* Add Button — ícone no mobile, texto no desktop */}
                         <Button
                             onClick={handleAddClick}
-                            className="h-10 w-10 shrink-0 p-0 font-inter font-medium md:w-auto md:px-3 md:gap-0"
+                            className="h-10 w-10 shrink-0 p-0 font-inter font-medium md:w-auto md:px-4 md:gap-0"
                         >
                             <Plus className="h-4 w-4 md:mr-2" />
                             <span className="hidden md:inline">Adicionar</span>
@@ -142,7 +183,10 @@ export default function CadastrosPage() {
                                         : 'border border-border text-muted-foreground hover:text-foreground'
                                 }`}
                             >
-                                {tab.label}
+                                <span className="flex items-center gap-1.5">
+                                    <tab.icon className="h-3.5 w-3.5" />
+                                    {tab.label}
+                                </span>
                             </button>
                         ))}
                     </div>
@@ -161,11 +205,11 @@ export default function CadastrosPage() {
 
                 {/* Content Area - Cards */}
                 <div className="flex-1 flex flex-col gap-8 overflow-auto scrollbar-hide">
-                    {activeTab === 'carteiras' && <WalletsContent isOpen={isWalletDialogOpen} onOpenChange={setIsWalletDialogOpen} searchQuery={searchValue} />}
-                    {activeTab === 'pagadores' && <PayersContent isOpen={isPayerDialogOpen} onOpenChange={setIsPayerDialogOpen} searchQuery={searchValue} />}
-                    {activeTab === 'beneficiarios' && <PayeesContent isOpen={isPayeeDialogOpen} onOpenChange={setIsPayeeDialogOpen} searchQuery={searchValue} />}
-                    {activeTab === 'categorias' && <CategoriesContent isOpen={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen} searchQuery={searchValue} activeTab={categoryType} />}
-                    {activeTab === 'classificacoes' && <ClassificationsContent isOpen={isClassificationDialogOpen} onOpenChange={setIsClassificationDialogOpen} searchQuery={searchValue} />}
+                    {activeTab === 'carteiras' && <WalletsContent isOpen={isWalletDialogOpen} onOpenChange={setIsWalletDialogOpen} searchQuery={searchValue} onCountChange={(n) => setCounts(c => ({ ...c, carteiras: n }))} />}
+                    {activeTab === 'pagadores' && <PayersContent isOpen={isPayerDialogOpen} onOpenChange={setIsPayerDialogOpen} searchQuery={searchValue} onCountChange={(n) => setCounts(c => ({ ...c, pagadores: n }))} />}
+                    {activeTab === 'beneficiarios' && <PayeesContent isOpen={isPayeeDialogOpen} onOpenChange={setIsPayeeDialogOpen} searchQuery={searchValue} onCountChange={(n) => setCounts(c => ({ ...c, beneficiarios: n }))} />}
+                    {activeTab === 'categorias' && <CategoriesContent isOpen={isCategoryDialogOpen} onOpenChange={setIsCategoryDialogOpen} searchQuery={searchValue} activeTab={categoryType} onCountChange={(n) => setCounts(c => ({ ...c, categorias: n }))} />}
+                    {activeTab === 'classificacoes' && <ClassificationsContent isOpen={isClassificationDialogOpen} onOpenChange={setIsClassificationDialogOpen} searchQuery={searchValue} onCountChange={(n) => setCounts(c => ({ ...c, classificacoes: n }))} />}
                 </div>
             </div>
         </div>

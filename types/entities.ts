@@ -46,6 +46,7 @@ export interface Category {
     type: 'Receita' | 'Despesa';
     icon: string;
     color: string;
+    is_default?: boolean;
     created_at: string;
     updated_at: string;
     // Propriedades computadas
@@ -61,6 +62,7 @@ export interface Subcategory {
     category_id: string;
     name: string;
     description?: string;
+    is_default?: boolean;
     created_at: string;
     updated_at: string;
     transactions?: { count: number }[];
@@ -73,6 +75,7 @@ export interface Classification {
     description?: string;
     color: string;
     icon: string;
+    is_default?: boolean;
     created_at: string;
     updated_at: string;
     transactions_count?: number;

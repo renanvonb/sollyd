@@ -124,7 +124,7 @@ export function SubcategoryDialog({
                     </div>
 
                     <div className={subcategory ? "flex justify-between gap-2 pt-4" : "flex justify-end gap-2 pt-4"}>
-                        {subcategory && onDelete && (
+                        {subcategory && !subcategory.is_default && onDelete && (
                             <Button
                                 type="button"
                                 variant="ghost"

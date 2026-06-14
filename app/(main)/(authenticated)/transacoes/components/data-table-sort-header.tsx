@@ -23,8 +23,7 @@ export function DataTableSortHeader<TData, TValue>({
     return (
         <Button
             variant="ghost"
-            size="sm"
-            className={cn("-ml-3 h-7 px-2 text-xs md:h-8 md:px-3 md:text-sm data-[state=open]:bg-accent", className)}
+            className={cn("-ml-3 h-7 px-2 text-xs md:h-10 md:px-4 md:text-sm data-[state=open]:bg-accent", className)}
             onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
         >
             <span>{title}</span>

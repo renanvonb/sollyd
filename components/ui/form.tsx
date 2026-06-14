@@ -95,7 +95,7 @@ const FormLabel = React.forwardRef<
     return (
         <Label
             ref={ref}
-            className={cn(className, error && "text-red-600")}
+            className={cn(className, error && "text-destructive")}
             htmlFor={formItemId}
             {...props}
         />
@@ -129,11 +129,7 @@ const FormDescription = React.forwardRef<
     HTMLParagraphElement,
     React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => {
-    const { formDescriptionId, error } = useFormField()
-
-    if (error) {
-        return null
-    }
+    const { formDescriptionId } = useFormField()
 
     return (
         <p
@@ -151,13 +147,7 @@ const FormMessage = React.forwardRef<
     React.HTMLAttributes<HTMLParagraphElement>
 >(({ className, children, ...props }, ref) => {
     const { error, formMessageId } = useFormField()
-
-    // Regra estrita: Se houver erro, o componente de auxílio/erro abaixo do campo não é renderizado
-    if (error) {
-        return null
-    }
-
-    const body = children
+    const body = error ? String(error?.message) : children
 
     if (!body) {
         return null
@@ -167,7 +157,7 @@ const FormMessage = React.forwardRef<
         <p
             ref={ref}
             id={formMessageId}
-            className={cn("text-xs font-medium text-red-600", className)}
+            className={cn("text-[0.8rem] font-medium text-destructive", className)}
             {...props}
         >
             {body}

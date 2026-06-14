@@ -153,7 +153,7 @@ export function ProfileSheet({ user, isOpen, onOpenChange }: ProfileSheetProps) 
                                                     <Button
                                                         variant="ghost"
                                                         size="icon"
-                                                        className="h-8 w-8 text-muted-foreground hover:text-foreground"
+                                                        className="text-muted-foreground hover:text-foreground"
                                                         asChild
                                                     >
                                                         <label className="cursor-pointer">
@@ -177,7 +177,7 @@ export function ProfileSheet({ user, isOpen, onOpenChange }: ProfileSheetProps) 
                                                         <Button
                                                             variant="ghost"
                                                             size="icon"
-                                                            className="h-8 w-8 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                                                            className="text-muted-foreground hover:text-destructive hover:bg-destructive/10"
                                                             onClick={handleRemoveAvatar}
                                                             disabled={isUploading}
                                                         >

@@ -1,12 +1,13 @@
 'use client';
 
-import { PanelLeftClose, PanelLeftOpen, Eye, EyeOff, Menu } from 'lucide-react';
+import { Eye, EyeOff, Menu } from 'lucide-react';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { ReactNode } from 'react';
 import { useSidebar } from '@/hooks/use-sidebar-state';
 import { useVisibility } from '@/hooks/use-visibility-state';
 import { Button } from '@/components/ui/button';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import {
     Tooltip,
@@ -49,7 +50,7 @@ export function TopBar({
     rightContent,
     showActiveTabName = false,
 }: TopBarProps) {
-    const { isOpen, toggle } = useSidebar();
+    const { toggle } = useSidebar();
     const { isVisible, toggleVisibility } = useVisibility();
 
     // Encontra o nome da tab ativa
@@ -65,7 +66,7 @@ export function TopBar({
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                        className="text-muted-foreground hover:text-foreground"
                         onClick={toggleVisibility}
                         aria-label={isVisible ? "Ocultar valores" : "Mostrar valores"}
                     >
@@ -99,88 +100,24 @@ export function TopBar({
             </header>
 
             {/* ── DESKTOP TopBar (oculto em mobile) ── */}
-            <header className="sticky top-0 z-30 w-[calc(100%+16px)] -ml-4 pl-4 border-b border-border bg-card dark:bg-[#0a0a0a] h-[72px] flex-none font-sans transition-colors duration-200 hidden md:block">
-                <div className="max-w-[1440px] mx-auto px-8 h-full flex items-center justify-between w-full">
+            <header className="sticky top-0 z-30 w-[calc(100%+16px)] -ml-4 pl-4 border-b border-border bg-background flex-none font-sans transition-colors duration-200 hidden md:block">
+                <div className="max-w-[1440px] mx-auto px-6 py-4 flex items-center justify-between w-full">
 
-                    {/* Left: Sidebar Toggle + Module/Tab Name */}
-                    <div className="flex items-center gap-4">
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button
-                                    variant="ghost"
-                                    size="icon"
-                                    onClick={toggle}
-                                    className="text-muted-foreground hover:text-foreground transition-all flex-none"
-                                >
-                                    {isOpen ? (
-                                        <PanelLeftClose className="h-5 w-5" />
-                                    ) : (
-                                        <PanelLeftOpen className="h-5 w-5" />
-                                    )}
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <p>{isOpen ? "Recolher" : "Expandir"}</p>
-                            </TooltipContent>
-                        </Tooltip>
-
-                        <span className="text-sm font-medium text-foreground font-inter">
+                    {/* Left: Module Name */}
+                    <div className="flex items-center">
+                        <span className="text-sm font-normal text-foreground font-inter">
                             {displayName}
                         </span>
                     </div>
 
-                    {/* Center: Tabs or Custom Content */}
-                    <div className="flex items-center justify-center">
-                        {centerContent ? (
-                            centerContent
-                        ) : tabs.length > 0 ? (
-                            <nav className="flex items-center gap-6 h-full">
-                                {tabs.map((tab) => {
-                                    const isActive = activeTab === tab.id;
-
-                                    return (
-                                        <button
-                                            key={tab.id}
-                                            onClick={() => onTabChange?.(tab.id)}
-                                            className={cn(
-                                                'relative h-[72px] flex items-center px-1 text-sm font-medium transition-colors border-b-2 font-inter',
-                                                variant === 'simple' && 'px-3',
-                                                isActive
-                                                    ? 'text-primary border-primary'
-                                                    : 'text-muted-foreground border-transparent hover:text-primary/70'
-                                            )}
-                                        >
-                                            {tab.label}
-                                        </button>
-                                    );
-                                })}
-                            </nav>
-                        ) : null}
-                    </div>
-
-                    {/* Right: Icons or Custom Content */}
+                    {/* Right: Custom or default */}
                     {rightContent ? (
                         rightContent
                     ) : (
-                        <div className="flex items-center gap-3 justify-end">
-                            <Tooltip>
-                                <TooltipTrigger asChild>
-                                    <Button
-                                        variant="ghost"
-                                        size="icon"
-                                        className="text-muted-foreground hover:text-foreground"
-                                        onClick={toggleVisibility}
-                                    >
-                                        {isVisible ? <Eye className="h-5 w-5" /> : <EyeOff className="h-5 w-5" />}
-                                    </Button>
-                                </TooltipTrigger>
-                                <TooltipContent>
-                                    <p>{isVisible ? "Ocultar valores" : "Mostrar valores"}</p>
-                                </TooltipContent>
-                            </Tooltip>
-
-    
-
+                        <div className="flex items-center gap-2 justify-end">
+                            <Button variant="outline" size="icon" className="text-muted-foreground hover:text-foreground" onClick={toggleVisibility}>
+                                {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                            </Button>
                         </div>
                     )}
                 </div>

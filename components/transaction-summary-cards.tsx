@@ -69,7 +69,7 @@ export function TransactionSummaryCards({ totals, isLoading }: TransactionSummar
     ]
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
             {cards.map((card, index) => {
                 const percentage = getPercentage(card.value)
                 const Icon = card.icon
@@ -77,15 +77,15 @@ export function TransactionSummaryCards({ totals, isLoading }: TransactionSummar
                 return (
                     <Card
                         key={index}
-                        className="group relative overflow-hidden bg-card rounded-lg p-4 md:p-6 shadow-sm hover:shadow-md flex flex-col justify-between border border-border"
+                        className="group relative overflow-hidden bg-card rounded-lg p-3 md:p-5 shadow-sm hover:shadow-md flex flex-col justify-between border border-border"
                     >
                         <div className="flex flex-col gap-1 relative z-10">
                             {/* Header: Label (Left) + Badge (Right) */}
-                            <div className="flex items-start justify-between mb-2 md:mb-4">
+                            <div className="flex items-start justify-between mb-2 md:mb-5 min-h-[20px] md:min-h-[24px]">
                                 <span className="text-xs md:text-sm font-medium text-muted-foreground font-inter">
                                     {card.label}
                                 </span>
-                                {card.hasBadge && isVisible && (
+                                {card.hasBadge && (
                                     isLoading ? (
                                         <Skeleton className="h-5 w-12 rounded-full bg-muted" />
                                     ) : (
@@ -93,9 +93,7 @@ export function TransactionSummaryCards({ totals, isLoading }: TransactionSummar
                                             variant="secondary"
                                             className={cn(
                                                 "rounded-full px-1.5 md:px-2 py-0 md:py-0.5 text-[10px] md:text-xs font-normal bg-muted/50 text-muted-foreground border border-border/50",
-                                                // Optional: Add color coding based on card type if desired
-                                                // card.label === "Receitas" && "text-emerald-500 bg-emerald-500/10 border-emerald-500/20",
-                                                // card.label === "Despesas" && "text-rose-500 bg-rose-500/10 border-rose-500/20",
+                                                !isVisible && "invisible"
                                             )}
                                         >
                                             <Icon className="h-2.5 w-2.5 md:h-3 md:w-3 mr-1 md:mr-1" />
@@ -103,13 +101,13 @@ export function TransactionSummaryCards({ totals, isLoading }: TransactionSummar
                                         </Badge>
                                     )
                                 )}
-                                {!card.hasBadge && (card as any).showIcon !== false && (
+                                {!card.hasBadge && (
                                     <Icon className="h-3 w-3 md:h-4 md:w-4 text-muted-foreground/50" />
                                 )}
                             </div>
 
                             {/* Value */}
-                            <div className="text-xl md:text-3xl font-bold tracking-tight font-sans text-foreground min-h-[28px] md:min-h-[36px]">
+                            <div className="text-xl md:text-3xl font-semibold tracking-tight font-inter text-foreground min-h-[28px] md:min-h-[36px]">
                                 {isLoading ? (
                                     <Skeleton className="h-9 w-32 bg-muted rounded-md" />
                                 ) : (

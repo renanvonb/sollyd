@@ -120,7 +120,7 @@ export function TransactionsHistoryChart({ data }: TransactionsHistoryChartProps
                         tickMargin={10}
                         axisLine={false}
                         interval={isMobile && !isExpanded ? 4 : 0}
-                        tick={{ fontSize: isExpanded ? 12 : 9 }}
+                        tick={{ fontSize: isExpanded ? 14 : 11 }}
                         tickFormatter={(value) => {
                             // Year View: YYYY-MM
                             if (value.length === 7) {
@@ -163,7 +163,7 @@ export function TransactionsHistoryChart({ data }: TransactionsHistoryChartProps
                         tickLine={false}
                         axisLine={false}
                         width={80}
-                        tick={{ textAnchor: 'start', fontSize: isExpanded ? 12 : 9 }}
+                        tick={{ textAnchor: 'start', fontSize: isExpanded ? 14 : 11 }}
                         tickMargin={0}
                         dx={-75}
                         tickFormatter={(value) => {
@@ -285,7 +285,7 @@ export function TransactionsHistoryChart({ data }: TransactionsHistoryChartProps
     return (
         <Dialog>
             <Card className="h-full flex flex-col hover:shadow-md transition-all">
-                <CardHeader className="border-b shrink-0 flex flex-row items-center justify-between px-4 md:px-6 py-4 space-y-0 group">
+                <CardHeader className="shrink-0 flex flex-row items-center justify-between px-4 md:px-6 py-4 space-y-0 group">
                     <div className="flex items-center gap-2">
                         {hasData ? (
                             <DialogTrigger asChild>

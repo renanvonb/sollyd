@@ -30,6 +30,7 @@ import { getSubcategoriesByCategoryId, createSubcategory, deleteSubcategory } fr
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/empty-state";
 import { SubcategoryDialog } from "./subcategory-dialog";
+import { useVisibility } from '@/hooks/use-visibility-state';
 
 interface CategorySheetProps {
     category: Category | null;
@@ -55,6 +56,7 @@ export function CategorySheet({
     const [isAddSubOpen, setIsAddSubOpen] = useState(false);
     const [editingSubcategory, setEditingSubcategory] = useState<Subcategory | null>(null);
     const [subToDelete, setSubToDelete] = useState<Subcategory | null>(null);
+    const { isVisible } = useVisibility();
 
     useEffect(() => {
         if (isOpen && category) {
@@ -202,7 +204,7 @@ export function CategorySheet({
                                                     {sub.name}
                                                 </h4>
                                                 <p className="text-sm text-muted-foreground font-inter truncate">
-                                                    {sub.transactions?.[0]?.count || 0} transações
+                                                    {isVisible ? (sub.transactions?.[0]?.count || 0) : '••'} transações
                                                 </p>
                                             </div>
                                         </CardContent>
@@ -222,13 +224,17 @@ export function CategorySheet({
                 </div>
 
                 <SheetFooter className="mt-auto flex flex-row items-center justify-between sm:justify-between">
-                    <Button
-                        variant="ghost"
-                        className="text-red-600 hover:text-red-700 hover:bg-destructive/10 px-4 font-inter"
-                        onClick={() => onDelete(category)}
-                    >
-                        Excluir
-                    </Button>
+                    {!category.is_default ? (
+                        <Button
+                            variant="ghost"
+                            className="text-red-600 hover:text-red-700 hover:bg-destructive/10 px-4 font-inter"
+                            onClick={() => onDelete(category)}
+                        >
+                            Excluir
+                        </Button>
+                    ) : (
+                        <span />
+                    )}
 
                     <Button
                         variant="outline"
@@ -248,12 +254,12 @@ export function CategorySheet({
                     fetchSubcategories();
                     onRefresh();
                 }}
-                onDelete={() => {
+                onDelete={editingSubcategory && !editingSubcategory.is_default ? () => {
                     setIsAddSubOpen(false);
                     if (editingSubcategory) {
                         setSubToDelete(editingSubcategory);
                     }
-                }}
+                } : undefined}
             />
 
             <AlertDialog open={!!subToDelete} onOpenChange={() => setSubToDelete(null)}>

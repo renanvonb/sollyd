@@ -11,9 +11,10 @@ interface TransactionTableProps {
     onDelete?: (transaction: Transaction) => void
     onMarkAsPaid?: (transaction: Transaction) => void
     onMarkAsPending?: (transaction: Transaction) => void
+    onFilteredRowsChange?: (rows: any[]) => void
 }
 
-export function TransactionTable({ data, searchQuery, onEdit, onDelete, onMarkAsPaid, onMarkAsPending }: TransactionTableProps) {
+export function TransactionTable({ data, searchQuery, onEdit, onDelete, onMarkAsPaid, onMarkAsPending, onFilteredRowsChange }: TransactionTableProps) {
     return (
         <DataTable
             columns={columns}
@@ -23,6 +24,7 @@ export function TransactionTable({ data, searchQuery, onEdit, onDelete, onMarkAs
             onDelete={onDelete}
             onMarkAsPaid={onMarkAsPaid}
             onMarkAsPending={onMarkAsPending}
+            onFilteredRowsChange={onFilteredRowsChange}
         />
     )
 }

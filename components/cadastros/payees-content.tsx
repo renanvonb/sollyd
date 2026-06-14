@@ -34,14 +34,16 @@ import { PayeeForm } from './payee-form';
 import { getIconByName } from './icon-picker';
 import { getColorHex } from './color-picker';
 import { ModuleCardsSkeleton } from '@/components/ui/skeletons';
+import { useVisibility } from '@/hooks/use-visibility-state';
 
 export interface PayeesContentProps {
     isOpen: boolean;
     onOpenChange: (open: boolean) => void;
     searchQuery: string;
+    onCountChange?: (count: number) => void;
 }
 
-export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesContentProps) {
+export function PayeesContent({ isOpen, onOpenChange, searchQuery, onCountChange }: PayeesContentProps) {
     const router = useRouter();
     const [payees, setPayees] = useState<Payee[]>([]);
     const [loading, setLoading] = useState(true);
@@ -49,6 +51,7 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
     const [editingPayee, setEditingPayee] = useState<Payee | null>(null);
     const [deletingId, setDeletingId] = useState<string | null>(null);
     const [submitting, setSubmitting] = useState(false);
+    const { isVisible } = useVisibility();
 
     const filteredPayees = payees.filter(payee => {
         const normalize = (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
@@ -80,6 +83,10 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
     useEffect(() => {
         fetchPayees();
     }, []);
+
+    useEffect(() => {
+        onCountChange?.(payees.length)
+    }, [payees])
 
     useEffect(() => {
         if (!isOpen) {
@@ -143,7 +150,7 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {filteredPayees.map((payee) => {
                         const IconComponent = getIconByName('arrow-down-right');
                         const cardColor = getColorHex('red');
@@ -151,7 +158,7 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
                         return (
                             <Card
                                 key={payee.id}
-                                className="hover:bg-accent/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 cursor-pointer group border-border"
+                                className="hover:bg-accent/50 transition-all duration-300 cursor-pointer group border-border"
                                 onClick={() => {
                                     setEditingPayee(payee);
                                     onOpenChange(true);
@@ -170,7 +177,7 @@ export function PayeesContent({ isOpen, onOpenChange, searchQuery }: PayeesConte
                                                 <HighlightText text={payee.name} highlight={searchQuery} />
                                             </h3>
                                             <p className="text-sm text-muted-foreground font-inter truncate">
-                                                {payee.transactions?.[0]?.count || 0} transações
+                                                {isVisible ? (payee.transactions?.[0]?.count || 0) : '••'} transações
                                             </p>
                                         </div>
                                     </div>

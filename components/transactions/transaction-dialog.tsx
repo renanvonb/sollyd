@@ -5,7 +5,7 @@ import { useTransition } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import * as z from "zod"
-import { format, startOfMonth } from "date-fns"
+import { format, startOfMonth, parseISO } from "date-fns"
 import { Loader2, Calendar as CalendarIcon } from "lucide-react"
 import { toast } from "sonner"
 
@@ -204,8 +204,8 @@ export function TransactionDialog({
                         classification_id: transaction.classification_id || "",
                         category_id: transaction.category_id || "",
                         subcategory_id: transaction.subcategory_id || "",
-                        date: transaction.date ? new Date(transaction.date) : new Date(),
-                        competence: transaction.competence ? new Date(transaction.competence) : startOfMonth(new Date()),
+                        date: transaction.date ? parseISO(transaction.date) : new Date(),
+                        competence: transaction.competence ? parseISO(transaction.competence) : startOfMonth(new Date()),
                         status: transaction.status === 'Realizado' ? 'Realizado' : 'Pendente',
                     })
                 } else {

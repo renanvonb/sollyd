@@ -145,7 +145,7 @@ export function ExpensesByClassificationChart({ data, periodLabel, onClassificat
                                     fill="hsl(var(--muted-foreground))"
                                     textAnchor={labelX > cx ? 'start' : 'end'}
                                     dominantBaseline="central"
-                                    fontSize={isExpanded ? 12 : 9}
+                                    fontSize={isExpanded ? 14 : 11}
                                     fontWeight={600}
                                     style={{ opacity: 1, transition: 'opacity 0.2s' }}
                                 >
@@ -218,7 +218,7 @@ export function ExpensesByClassificationChart({ data, periodLabel, onClassificat
     return (
         <Dialog>
             <Card className="flex flex-col h-full hover:shadow-md transition-all">
-                <CardHeader className="flex flex-row items-center justify-between border-b shrink-0 px-4 md:px-6 py-4 space-y-0 group">
+                <CardHeader className="flex flex-row items-center justify-between shrink-0 px-4 md:px-6 py-4 space-y-0 group">
                     <div className="flex items-center gap-2">
                         {hasData ? (
                             <DialogTrigger asChild>

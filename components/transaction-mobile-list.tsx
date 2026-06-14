@@ -127,7 +127,7 @@ export function TransactionMobileList({
                             {/* Actions */}
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <Button variant="ghost" size="icon" className="h-8 w-8 shrink-0 text-neutral-400">
+                                    <Button variant="ghost" size="icon" className="shrink-0 text-neutral-400">
                                         <MoreHorizontal className="h-4 w-4" />
                                         <span className="sr-only">Ações</span>
                                     </Button>

@@ -57,7 +57,7 @@ export default async function DashboardPage({ searchParams }: DashboardPageProps
     const userName = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.email?.split('@')[0] || 'Usuário'
 
     return (
-        <div className="flex-1 flex flex-col h-full overflow-hidden">
+        <div className="h-dvh flex flex-col overflow-hidden">
             <DashboardHeader userName={userName} />
             <Suspense key={JSON.stringify(searchParams)} fallback={<DashboardSkeleton />}>
                 <DashboardContent searchParams={searchParams} />

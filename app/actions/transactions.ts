@@ -3,6 +3,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
+import { addMonths, addYears, startOfMonth, format, parseISO } from 'date-fns'
 
 const emptyToNull = (val: any) => (val === "" ? null : val);
 
@@ -16,9 +17,14 @@ const transactionSchema = z.object({
     category_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
     subcategory_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
     date: z.preprocess(emptyToNull, z.union([z.string(), z.date()]).optional().nullable()),
+    realized_at: z.preprocess(emptyToNull, z.union([z.string(), z.date()]).optional().nullable()),
     competence: z.preprocess(emptyToNull, z.union([z.string(), z.date()]).optional().nullable()),
     status: z.enum(['Realizado', 'Pendente']).optional().nullable(),
     wallet_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
+    is_recurring: z.boolean().optional().default(false),
+    is_installment: z.boolean().optional().default(false),
+    recurring_frequency: z.enum(['monthly', 'yearly']).optional().nullable(),
+    recurring_occurrences: z.coerce.number().min(2).max(60).optional().nullable(),
 }).superRefine((data, ctx) => {
     // Payee/Payer validation
     if ((data.type === 'expense' || data.type === 'revenue') && !data.payee_id) {
@@ -55,20 +61,69 @@ export async function saveTransaction(formData: any) {
             category_id: validated.category_id,
             subcategory_id: validated.subcategory_id,
             is_installment: false,
-
             date: validated.date,
+            realized_at: validated.realized_at,
             competence: validated.competence,
             status: validated.status,
             wallet_id: validated.wallet_id,
         }
 
-        const { error: insertError } = await supabase
-            .from('transactions')
-            .insert([transactionToInsert])
+        if ((validated.is_recurring || validated.is_installment) && validated.recurring_occurrences) {
+            const groupId = crypto.randomUUID()
+            const freq = validated.recurring_frequency || 'monthly'
+            // parseISO trata "yyyy-MM-01" como horário local (new Date() interpretaria como UTC,
+            // deslocando o mês em fusos negativos, ex.: 2026-07-01 → 30/06 local).
+            const baseComp = validated.competence
+                ? startOfMonth(typeof validated.competence === 'string' ? parseISO(validated.competence) : validated.competence)
+                : startOfMonth(new Date())
 
-        if (insertError) {
-            console.error('[saveTransaction] Database Error:', insertError)
-            throw new Error(`Erro ao salvar no banco: ${insertError.message}`)
+            const count = validated.recurring_occurrences
+            // Parcelamento: divide o valor total pelas parcelas (resto vai na última).
+            const perInstallment = validated.is_installment
+                ? Math.round((validated.amount / count) * 100) / 100
+                : validated.amount
+            const lastInstallment = validated.is_installment
+                ? Math.round((validated.amount - perInstallment * (count - 1)) * 100) / 100
+                : validated.amount
+
+            const rows = Array.from({ length: count }, (_, i) => {
+                const comp = freq === 'yearly'
+                    ? addYears(baseComp, i)
+                    : addMonths(baseComp, i)
+                return {
+                    ...transactionToInsert,
+                    amount: validated.is_installment
+                        ? (i === count - 1 ? lastInstallment : perInstallment)
+                        : validated.amount,
+                    description: validated.is_installment
+                        ? `${validated.description} (${i + 1}/${count})`
+                        : validated.description,
+                    competence: format(comp, 'yyyy-MM-01'),
+                    date: null,
+                    realized_at: null,
+                    status: 'Pendente',
+                    is_recurring: !!validated.is_recurring,
+                    is_installment: !!validated.is_installment,
+                    recurring_frequency: freq,
+                    recurring_occurrences: count,
+                    recurring_group_id: groupId,
+                }
+            })
+
+            const { error: insertError } = await supabase.from('transactions').insert(rows)
+            if (insertError) {
+                console.error('[saveTransaction] Recurring insert error:', insertError)
+                throw new Error(`Erro ao salvar no banco: ${insertError.message}`)
+            }
+        } else {
+            const { error: insertError } = await supabase
+                .from('transactions')
+                .insert([transactionToInsert])
+
+            if (insertError) {
+                console.error('[saveTransaction] Database Error:', insertError)
+                throw new Error(`Erro ao salvar no banco: ${insertError.message}`)
+            }
         }
 
         revalidatePath('/financeiro/transacoes')
@@ -145,6 +200,7 @@ export async function updateTransaction(id: string, formData: any) {
             is_installment: false,
 
             date: validated.date || null,
+            realized_at: validated.realized_at || null,
             competence: validated.competence || null,
             status: validated.status || null,
             wallet_id: validated.wallet_id || null,

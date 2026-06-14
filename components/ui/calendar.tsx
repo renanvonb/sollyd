@@ -10,12 +10,13 @@ import { Button } from "@/components/ui/button"
 
 export interface CalendarProps {
     className?: string
-    classNames?: any
+    classNames?: Record<string, string>
     showOutsideDays?: boolean
     mode?: "default" | "single" | "multiple" | "range"
-    selected?: Date | DateRange | undefined | any
-    onSelect?: (date: any) => void
-    [key: string]: any
+    selected?: Date | DateRange | undefined
+    onSelect?: (date: Date | DateRange | undefined) => void
+    disabled?: (date: Date) => boolean
+    initialFocus?: boolean
 }
 
 // Helpers e Constantes Compartilhadas

@@ -6,11 +6,13 @@ import { Button } from "@/components/ui/button"
 import { useVisibility } from "@/hooks/use-visibility-state"
 import { Transaction } from "@/types/transaction"
 import { cn } from "@/lib/utils"
+import { format, parseISO } from "date-fns"
+import { ptBR } from "date-fns/locale"
 import { HighlightText } from "@/components/ui/highlight-text"
 import { DataTableSortHeader } from "./data-table-sort-header"
 import { DataTableFilterHeader } from "./data-table-filter-header"
 import { TruncatedTextWithTooltip } from "./truncated-text-tooltip"
-import { MoreHorizontal, Pencil, Trash2, CheckCircle, Clock } from "lucide-react"
+import { MoreHorizontal, Pencil, Trash2, CheckCircle, Clock, Repeat, ArrowDownLeft, ArrowUpRight, TrendingUp } from "lucide-react"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -39,6 +41,35 @@ const statusOptions = [
 
 export const columns: ColumnDef<Transaction>[] = [
     {
+        accessorKey: "type",
+        size: 44,
+        header: () => null,
+        cell: ({ row }) => {
+            const typeValue = row.getValue("type") as string
+            const config = {
+                revenue: { label: "Receita", Icon: ArrowDownLeft, className: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" },
+                Receita: { label: "Receita", Icon: ArrowDownLeft, className: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" },
+                expense: { label: "Despesa", Icon: ArrowUpRight, className: "bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400" },
+                Despesa: { label: "Despesa", Icon: ArrowUpRight, className: "bg-red-100 text-red-600 dark:bg-red-900/40 dark:text-red-400" },
+                investment: { label: "Investimento", Icon: TrendingUp, className: "bg-blue-100 text-blue-600 dark:bg-blue-900/40 dark:text-blue-400" },
+            }[typeValue] || { label: typeValue, Icon: TrendingUp, className: "bg-zinc-100 text-zinc-600 dark:bg-zinc-800 dark:text-zinc-400" }
+
+            const Icon = config.Icon
+            return (
+                <span
+                    title={config.label}
+                    aria-label={config.label}
+                    className={cn("inline-flex items-center justify-center h-7 w-7 rounded-full", config.className)}
+                >
+                    <Icon className="h-4 w-4" />
+                </span>
+            )
+        },
+        filterFn: (row, id, value) => {
+            return value === row.getValue(id)
+        },
+    },
+    {
         accessorKey: "description",
         header: () => <div className="text-xs md:text-sm">Descrição</div>,
         cell: ({ row, table }) => {
@@ -55,61 +86,24 @@ export const columns: ColumnDef<Transaction>[] = [
                             highlight={searchQuery}
                         />
                     </TruncatedTextWithTooltip>
+                    {row.original.is_recurring && (
+                        <Repeat className="h-3 w-3 shrink-0 text-blue-500" title="Recorrente" />
+                    )}
                 </div>
             )
-        },
-    },
-    {
-        accessorKey: "type",
-        size: 100,
-        header: ({ column }) => (
-            <DataTableFilterHeader column={column} title="Tipo" options={typeOptions} />
-        ),
-        cell: ({ row }) => {
-            const typeValue = row.getValue("type") as string
-            const config = {
-                revenue: {
-                    label: "Receita",
-                    className: "bg-green-50 text-green-700 hover:bg-green-50/80 dark:bg-green-900/30 dark:text-green-400"
-                },
-                Receita: {
-                    label: "Receita",
-                    className: "bg-green-50 text-green-700 hover:bg-green-50/80 dark:bg-green-900/30 dark:text-green-400"
-                },
-                expense: {
-                    label: "Despesa",
-                    className: "bg-red-50 text-red-700 hover:bg-red-50/80 dark:bg-red-900/30 dark:text-red-400"
-                },
-                Despesa: {
-                    label: "Despesa",
-                    className: "bg-red-50 text-red-700 hover:bg-red-50/80 dark:bg-red-900/30 dark:text-red-400"
-                },
-                investment: {
-                    label: "Investimento",
-                    className: "bg-blue-50 text-blue-700 hover:bg-blue-50/80 dark:bg-blue-900/30 dark:text-blue-400"
-                }
-            }[typeValue] || {
-                label: typeValue,
-                className: "bg-zinc-50 text-zinc-700 hover:bg-zinc-50/80 dark:bg-zinc-900/30 dark:text-zinc-400"
-            }
-
-            return (
-                <Badge className={cn("font-medium border-none shadow-none text-[10px] leading-tight md:text-xs", config.className)}>
-                    {config.label}
-                </Badge>
-            )
-        },
-        filterFn: (row, id, value) => {
-            return value === row.getValue(id)
         },
     },
     {
         id: "payee",
         accessorFn: (row) => row.payees?.name,
         size: 130,
-        header: ({ column }) => (
-            <DataTableFilterHeader column={column} title="Favorecido" options={[]} />
-        ),
+        header: ({ column }) => {
+            const options = Array.from(column.getFacetedUniqueValues().keys())
+                .filter((v): v is string => Boolean(v))
+                .sort((a, b) => a.localeCompare(b, "pt-BR"))
+                .map((v) => ({ label: v, value: v }))
+            return <DataTableFilterHeader column={column} title="Favorecido" options={options} />
+        },
         cell: ({ row }) => {
             const payee = row.original.payees?.name
             return payee ? (
@@ -121,17 +115,20 @@ export const columns: ColumnDef<Transaction>[] = [
             )
         },
         filterFn: (row, id, value) => {
-            const payeeName = row.original.payees?.name
-            return payeeName?.toLowerCase().includes(value.toLowerCase()) ?? false
+            return row.original.payees?.name === value
         },
     },
     {
         id: "category",
         accessorFn: (row) => row.categories?.name,
         size: 120,
-        header: ({ column }) => (
-            <DataTableFilterHeader column={column} title="Categoria" options={[]} />
-        ),
+        header: ({ column }) => {
+            const options = Array.from(column.getFacetedUniqueValues().keys())
+                .filter((v): v is string => Boolean(v))
+                .sort((a, b) => a.localeCompare(b, "pt-BR"))
+                .map((v) => ({ label: v, value: v }))
+            return <DataTableFilterHeader column={column} title="Categoria" options={options} />
+        },
         cell: ({ row }) => {
             const category = row.original.categories?.name
             return category ? (
@@ -143,17 +140,20 @@ export const columns: ColumnDef<Transaction>[] = [
             )
         },
         filterFn: (row, id, value) => {
-            const categoryName = row.original.categories?.name
-            return categoryName?.toLowerCase().includes(value.toLowerCase()) ?? false
+            return row.original.categories?.name === value
         },
     },
     {
         id: "classification",
         accessorFn: (row) => row.classifications?.name,
         size: 130,
-        header: ({ column }) => (
-            <DataTableFilterHeader column={column} title="Classificação" options={[]} />
-        ),
+        header: ({ column }) => {
+            const options = Array.from(column.getFacetedUniqueValues().keys())
+                .filter((v): v is string => Boolean(v))
+                .sort((a, b) => a.localeCompare(b, "pt-BR"))
+                .map((v) => ({ label: v, value: v }))
+            return <DataTableFilterHeader column={column} title="Classificação" options={options} />
+        },
         cell: ({ row }) => {
             const classification = row.original.classifications?.name
             return classification ? (
@@ -165,8 +165,7 @@ export const columns: ColumnDef<Transaction>[] = [
             )
         },
         filterFn: (row, id, value) => {
-            const classificationName = row.original.classifications?.name
-            return classificationName?.toLowerCase().includes(value.toLowerCase()) ?? false
+            return row.original.classifications?.name === value
         },
     },
     {
@@ -208,16 +207,18 @@ export const columns: ColumnDef<Transaction>[] = [
     },
     {
         accessorKey: "date",
-        size: 100,
+        size: 120,
         header: ({ column }) => (
             <DataTableSortHeader column={column} title="Data" />
         ),
         cell: ({ row }) => {
             const date = row.getValue("date") as string | null
             if (!date) return <span className="text-xs md:text-sm text-muted-foreground">-</span>
-            const [year, month, day] = date.split("-")
-            const formatted = `${day}/${month}/${year}`
-            return <div className="text-xs md:text-sm tabular-nums text-muted-foreground">
+            const d = parseISO(date)
+            const weekday = format(d, "EEE", { locale: ptBR }).replace(".", "")
+            const weekdayCap = weekday.charAt(0).toUpperCase() + weekday.slice(1)
+            const formatted = `${format(d, "dd/MM/yy")}, ${weekdayCap}`
+            return <div className="text-xs md:text-sm tabular-nums text-muted-foreground whitespace-nowrap">
                 {formatted}
             </div>
         },
@@ -242,13 +243,13 @@ export const columns: ColumnDef<Transaction>[] = [
                 : "R$ ••••"
 
             const colorClass = (type === "revenue" || type === "Receita")
-                ? "text-green-600"
+                ? "text-emerald-600 dark:text-emerald-400"
                 : (type === "expense" || type === "Despesa")
-                    ? "text-red-600"
-                    : "text-blue-600"
+                    ? "text-red-600 dark:text-red-400"
+                    : "text-blue-600 dark:text-blue-400"
 
             return (
-                <div className={`text-xs md:text-sm font-semibold text-left tabular-nums ${colorClass}`}>
+                <div className={`text-xs md:text-sm font-normal text-left tabular-nums ${colorClass}`}>
                     <HighlightText text={formatted} highlight={searchQuery} />
                 </div>
             )
@@ -305,7 +306,7 @@ export const columns: ColumnDef<Transaction>[] = [
     },
     {
         id: "actions",
-        size: 40,
+        size: 36,
         header: () => <div className="sr-only">Ações</div>,
         cell: ({ row, table }) => {
             const transaction = row.original

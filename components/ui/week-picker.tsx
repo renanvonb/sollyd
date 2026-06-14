@@ -76,7 +76,7 @@ export function WeekPicker({ value, onChange, className }: WeekPickerProps) {
                 <Button
                     variant="outline"
                     className={cn(
-                        "w-[240px] justify-start text-left font-inter font-normal px-3",
+                        "w-[240px] justify-start text-left font-inter font-normal px-4",
                         !value && "text-muted-foreground",
                         className
                     )}

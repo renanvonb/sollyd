@@ -7,6 +7,8 @@ import {
     SortingState,
     flexRender,
     getCoreRowModel,
+    getFacetedRowModel,
+    getFacetedUniqueValues,
     getFilteredRowModel,
     getSortedRowModel,
     useReactTable,
@@ -30,6 +32,7 @@ interface DataTableProps<TData, TValue> {
     onDelete?: (row: TData) => void
     onMarkAsPaid?: (row: TData) => void
     onMarkAsPending?: (row: TData) => void
+    onFilteredRowsChange?: (rows: TData[]) => void
 }
 
 export function DataTable<TData, TValue>({
@@ -40,10 +43,12 @@ export function DataTable<TData, TValue>({
     onDelete,
     onMarkAsPaid,
     onMarkAsPending,
+    onFilteredRowsChange,
 }: DataTableProps<TData, TValue>) {
     const [isScrolled, setIsScrolled] = React.useState(false)
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
+    const [columnVisibility] = React.useState({ payment_method: false, competence: false })
 
     const table = useReactTable({
         data,
@@ -51,11 +56,14 @@ export function DataTable<TData, TValue>({
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
         getFilteredRowModel: getFilteredRowModel(),
+        getFacetedRowModel: getFacetedRowModel(),
+        getFacetedUniqueValues: getFacetedUniqueValues(),
         onSortingChange: setSorting,
         onColumnFiltersChange: setColumnFilters,
         state: {
             sorting,
             columnFilters,
+            columnVisibility,
         },
         meta: {
             searchQuery,
@@ -66,6 +74,12 @@ export function DataTable<TData, TValue>({
         },
     })
 
+    const filteredRows = table.getFilteredRowModel().rows
+    React.useEffect(() => {
+        onFilteredRowsChange?.(filteredRows.map((r) => r.original))
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [filteredRows])
+
     const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
         const target = e.target as HTMLDivElement
         setIsScrolled(target.scrollTop > 0)
@@ -73,10 +87,10 @@ export function DataTable<TData, TValue>({
 
     return (
         <div
-            className="relative w-full h-full overflow-y-auto overflow-x-hidden scrollbar-hide"
+            className="relative w-full h-full overflow-y-auto overflow-x-auto scrollbar-hide"
             onScroll={handleScroll}
         >
-            <Table className="table-fixed w-full">
+            <Table className="table-fixed w-full min-w-[700px]">
                 <TableHeader
                     className={cn(
                         "sticky top-0 bg-card z-10 border-b transition-shadow duration-200",

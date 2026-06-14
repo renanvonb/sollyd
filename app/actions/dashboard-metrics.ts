@@ -128,7 +128,7 @@ export async function getDashboardMetrics({ range, startDate, endDate, competenc
                 color
             )
         `)
-        .in('type', ['expense', 'despesa', 'Despesa', 'Expense']) // Check all possible variations
+        .eq('type', 'Despesa')
 
     catQuery = applyFilters(catQuery)
 
@@ -175,7 +175,7 @@ export async function getDashboardMetrics({ range, startDate, endDate, competenc
                 color
             )
         `)
-        .in('type', ['expense', 'despesa', 'Despesa', 'Expense'])
+        .eq('type', 'Despesa')
 
     classQuery = applyFilters(classQuery)
 

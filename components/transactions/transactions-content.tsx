@@ -44,8 +44,19 @@ export function TransactionsContent({
     onResetSearch,
     onAddClick,
 }: TransactionsContentProps) {
+    const [filteredRows, setFilteredRows] = React.useState<any[] | null>(null)
+
+    // Nova carga de dados (ou lista vazia) invalida o snapshot filtrado da tabela.
+    React.useEffect(() => {
+        setFilteredRows(null)
+    }, [data])
+
+    // Linhas que alimentam os totais: respeitam filtros de coluna da tabela.
+    // Fallback para `data` enquanto a tabela não reportou (ex.: loading/empty).
+    const totalsSource = filteredRows ?? data
+
     const totals = React.useMemo(() => {
-        return data.reduce((acc, curr) => {
+        return totalsSource.reduce((acc, curr) => {
             const amount = parseFloat(curr.amount as any) || 0
 
 
@@ -57,14 +68,14 @@ export function TransactionsContent({
             acc.balance = acc.income - acc.expense - acc.investment
             return acc
         }, { income: 0, expense: 0, investment: 0, balance: 0 })
-    }, [data])
+    }, [totalsSource])
 
     const emptyTitle = searchQuery
         ? "Nenhuma transação encontrada"
         : (emptyMessages[range] || "Nenhuma transação cadastrada")
 
     return (
-        <div className="flex-1 flex flex-col gap-4 overflow-hidden">
+        <div className="flex-1 flex flex-col gap-[25px] overflow-hidden">
             {/* Grid de Totalizadores (KPIs) - SEMPRE VISÍVEL */}
             <div className="flex-none font-sans">
                 <TransactionSummaryCards totals={totals} isLoading={isPending} />
@@ -116,6 +127,7 @@ export function TransactionsContent({
                             onDelete={onDelete}
                             onMarkAsPaid={onMarkAsPaid}
                             onMarkAsPending={onMarkAsPending}
+                            onFilteredRowsChange={setFilteredRows}
                         />
                     </div>
                 )}

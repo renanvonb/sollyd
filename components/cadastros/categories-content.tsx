@@ -32,9 +32,10 @@ interface CategoriesContentProps {
     onOpenChange: (open: boolean) => void;
     searchQuery: string;
     activeTab?: 'Receita' | 'Despesa';
+    onCountChange?: (count: number) => void;
 }
 
-export function CategoriesContent({ isOpen, onOpenChange, searchQuery, activeTab = 'Despesa' }: CategoriesContentProps) {
+export function CategoriesContent({ isOpen, onOpenChange, searchQuery, activeTab = 'Despesa', onCountChange }: CategoriesContentProps) {
     const [categories, setCategories] = useState<Category[]>([]);
     const [loading, setLoading] = useState(true);
     const [editingItem, setEditingItem] = useState<Category | null>(null);
@@ -54,6 +55,10 @@ export function CategoriesContent({ isOpen, onOpenChange, searchQuery, activeTab
     useEffect(() => {
         fetchData();
     }, []);
+
+    useEffect(() => {
+        onCountChange?.(categories.length)
+    }, [categories])
 
     const fetchData = async () => {
         await fetchCategories();
@@ -175,7 +180,7 @@ export function CategoriesContent({ isOpen, onOpenChange, searchQuery, activeTab
                     className="flex-1 border-border border-dashed"
                 />
             ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {filteredCategories.map((item) => {
                         const Icon = getIconByName(item.icon || 'cart');
                         const cardColor = getColorHex(item.color || 'zinc');
@@ -183,7 +188,7 @@ export function CategoriesContent({ isOpen, onOpenChange, searchQuery, activeTab
                         return (
                             <Card
                                 key={item.id}
-                                className="group cursor-pointer hover:bg-accent/50 hover:shadow-md hover:-translate-y-1 transition-all duration-300 border-border relative overflow-hidden"
+                                className="group cursor-pointer hover:bg-accent/50 transition-all duration-300 border-border relative overflow-hidden"
                                 onClick={() => openSheet(item)}
                             >
 
@@ -247,7 +252,7 @@ export function CategoriesContent({ isOpen, onOpenChange, searchQuery, activeTab
                             color: editingItem.color,
                             icon: editingItem.icon
                         } : { type: activeTab }}
-                        onDelete={editingItem ? () => {
+                        onDelete={editingItem && !editingItem.is_default ? () => {
                             onOpenChange(false);
                             setDeleteItem(editingItem);
                         } : undefined}

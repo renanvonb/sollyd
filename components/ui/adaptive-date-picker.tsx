@@ -79,7 +79,7 @@ export function AdaptiveDatePicker({ mode, value, onChange, className }: Adaptiv
         if (!displayDate) return "Selecionar"
 
         if (mode === "dia") {
-            return format(displayDate, "dd/MM/yyyy", { locale: ptBR })
+            return format(displayDate, "dd/MM/yy", { locale: ptBR })
         }
         if (mode === "semana") {
             const weekStart = startOfWeek(displayDate, { weekStartsOn: 0 })
@@ -173,7 +173,7 @@ export function AdaptiveDatePicker({ mode, value, onChange, className }: Adaptiv
                 <Button
                     variant="outline"
                     className={cn(
-                        "w-auto justify-start text-left font-inter font-normal px-3",
+                        "w-auto justify-start text-left font-inter font-normal px-4",
                         !value && !date && "text-muted-foreground",
                         mode === "custom" && "w-[240px]", // Largura maior para range
                         className

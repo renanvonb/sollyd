@@ -126,7 +126,7 @@ export default function LoginPage() {
                                 type="email"
                                 placeholder="Informe seu e-mail"
                                 className={cn(
-                                    "h-11 rounded-lg border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                                    "h-11 rounded-lg border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                                     errors.email && "border-red-600 focus-visible:ring-red-600"
                                 )}
                                 {...register('email')}
@@ -152,7 +152,7 @@ export default function LoginPage() {
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Insira sua senha"
                                     className={cn(
-                                        "h-11 rounded-lg border-zinc-300 bg-white px-3 py-2 text-sm text-zinc-900 ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10",
+                                        "h-11 rounded-lg border-zinc-300 bg-white px-4 py-2 text-sm text-zinc-900 ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-zinc-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-zinc-900 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 pr-10",
                                         errors.password && "border-red-600 focus-visible:ring-red-600"
                                     )}
                                     {...register('password')}

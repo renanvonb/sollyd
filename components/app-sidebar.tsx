@@ -4,7 +4,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
-import { LayoutDashboard, ArrowRightLeft, TrendingUp, UserPlus, LogOut, User, PieChart } from 'lucide-react'
+import { LayoutDashboard, ArrowRightLeft, TrendingUp, UserPlus, LogOut, User, PieChart, PiggyBank, PanelLeftClose, PanelLeftOpen } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
 import { signOut } from '@/app/actions/auth'
@@ -52,8 +52,9 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Transações', href: '/transacoes', icon: ArrowRightLeft },
-    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp },
-    { label: 'Orçamentos', href: '/orcamentos', icon: PieChart },
+    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp, disabled: true },
+    { label: 'Caixinhas', href: '/caixinhas', icon: PiggyBank, disabled: true },
+    { label: 'Orçamentos', href: '/orcamentos', icon: PieChart, disabled: true },
     { label: 'Cadastros', href: '/cadastros', icon: UserPlus },
 ]
 
@@ -70,40 +71,64 @@ function SidebarNavContent({
     onProfileOpen: () => void
 }) {
     const pathname = usePathname()
+    const { toggle } = useSidebar()
     const userName = (user as any)?.user_metadata?.full_name || user.email?.split('@')[0] || 'Usuário'
     const avatarUrl = (user as any)?.user_metadata?.avatar_url || null
 
     return (
         <>
             {/* Logo */}
-            <div className="flex items-center h-[72px] px-6 border-b border-[#262626]">
-                <div className="flex items-center">
-                    <div className="relative h-8 w-8 shrink-0">
-                        <Image
-                            src="/brand/symbol.png"
-                            alt="Sollyd"
-                            fill
-                            className="object-contain"
-                            style={{
-                                filter: 'brightness(0) saturate(100%) invert(93%) sepia(46%) saturate(1272%) hue-rotate(8deg) brightness(104%) contrast(98%)'
-                            }}
-                        />
-                    </div>
-                    {showLabels && (
-                        <span className="font-jakarta font-bold text-2xl text-white tracking-tight ml-3 whitespace-nowrap">
-                            Sollyd
-                        </span>
-                    )}
-                </div>
+            <div className={cn("group flex items-center h-[72px]", showLabels ? "pl-5 pr-3 justify-between" : "px-3 justify-center")}>
+                {showLabels ? (
+                    <>
+                        <div className="flex items-center">
+                            <div className="relative h-8 w-8 shrink-0">
+                                <Image
+                                    src="/brand/symbol.png"
+                                    alt="Sollyd"
+                                    fill
+                                    className="object-contain"
+                                    style={{ filter: 'brightness(0) saturate(100%) invert(93%) sepia(46%) saturate(1272%) hue-rotate(8deg) brightness(104%) contrast(98%)' }}
+                                />
+                            </div>
+                            <span className="font-jakarta font-bold text-2xl text-white tracking-tight ml-3 whitespace-nowrap">
+                                Sollyd
+                            </span>
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={toggle}
+                            className="h-8 w-8 text-neutral-400 hover:text-white hover:bg-neutral-800/50 shrink-0"
+                        >
+                            <PanelLeftClose className="h-4 w-4" />
+                        </Button>
+                    </>
+                ) : (
+                    <>
+                        <div className="relative h-8 w-8 shrink-0 group-hover:hidden">
+                            <Image
+                                src="/brand/symbol.png"
+                                alt="Sollyd"
+                                fill
+                                className="object-contain"
+                                style={{ filter: 'brightness(0) saturate(100%) invert(93%) sepia(46%) saturate(1272%) hue-rotate(8deg) brightness(104%) contrast(98%)' }}
+                            />
+                        </div>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            onClick={toggle}
+                            className="hidden group-hover:flex h-8 w-8 text-neutral-400 hover:text-white hover:bg-neutral-800/50"
+                        >
+                            <PanelLeftOpen className="h-4 w-4" />
+                        </Button>
+                    </>
+                )}
             </div>
 
             {/* Nav */}
-            <nav className="flex-1 px-4 py-6 space-y-1 overflow-hidden">
-                {showLabels && (
-                    <div className="px-4 mb-2 text-xs font-semibold text-neutral-400 uppercase tracking-wider font-inter">
-                        Financeiro
-                    </div>
-                )}
+            <nav className="flex-1 px-3 pt-2 pb-6 space-y-1 overflow-hidden">
                 {menuItems.map((item) => {
                     const isActive = pathname === item.href || pathname.startsWith(item.href + '/')
                     const Icon = item.icon
@@ -117,10 +142,10 @@ function SidebarNavContent({
                                 else onNavigate?.()
                             }}
                             className={cn(
-                                'flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-all duration-200 group',
-                                showLabels ? 'gap-3' : 'justify-center px-2',
+                                'flex items-center px-3 py-3 rounded-lg text-sm font-medium transition-all duration-200 group',
+                                showLabels ? 'gap-3' : 'justify-center',
                                 isActive
-                                    ? 'bg-neutral-800 text-white'
+                                    ? 'bg-white/10 text-white'
                                     : 'text-neutral-400 hover:text-white hover:bg-neutral-800/50',
                                 item.disabled && 'opacity-50 cursor-not-allowed'
                             )}
@@ -152,7 +177,7 @@ function SidebarNavContent({
             </nav>
 
             {/* User dropdown */}
-            <div className="p-4">
+            <div className="p-3">
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <Button
@@ -223,7 +248,7 @@ export function AppSidebar({ user }: SidebarProps) {
             <Sheet open={isMobileSheetOpen} onOpenChange={setMobileSheetOpen}>
                 <SheetContent
                     side="left"
-                    className="p-0 w-64 bg-[#0a0a0a] border-r border-[#262626] flex flex-col md:hidden"
+                    className="p-0 w-64 max-w-[85vw] bg-[#0a0a0a] border-r border-[#262626] flex flex-col"
                 >
                     <SidebarNavContent
                         user={user}
@@ -242,7 +267,7 @@ export function AppSidebar({ user }: SidebarProps) {
                 id="main-sidebar"
                 className={cn(
                     "fixed left-0 top-0 z-40 h-screen transition-all duration-300 border-r border-[#262626] bg-[#0a0a0a] flex-col font-sans hidden md:flex",
-                    isOpen ? "w-64" : "w-20"
+                    isOpen ? "w-56" : "w-[68px]"
                 )}
             >
                 <SidebarNavContent

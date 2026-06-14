@@ -118,6 +118,28 @@ export async function getSubcategories(categoryId: string) {
     return (data || []) as Subcategory[]
 }
 
+export async function getAllSubcategories() {
+    noStore()
+
+    const supabase = createClient()
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) return []
+
+    const { data, error } = await supabase
+        .from('subcategories')
+        .select('*')
+        .eq('user_id', user.id)
+        .order('name')
+
+    if (error) {
+        console.error('[getAllSubcategories] Error:', error)
+        return []
+    }
+
+    return (data || []) as Subcategory[]
+}
+
 export async function getClassifications() {
     noStore()
     const supabase = createClient()

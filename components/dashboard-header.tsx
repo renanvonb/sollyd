@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { DateRange } from "react-day-picker"
 import { startOfMonth, endOfMonth, startOfYear, endOfYear, format } from "date-fns"
 import { ptBR } from "date-fns/locale"
-import { Search, ListFilter, CalendarDays } from "lucide-react"
+import { Search, ListFilter, CalendarDays, Eye, EyeOff } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -14,6 +14,8 @@ import { AdaptiveDatePicker } from "@/components/ui/adaptive-date-picker"
 import { TopBar } from "@/components/ui/top-bar"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { TimeRange } from "@/types/time-range"
+import { useVisibility } from "@/hooks/use-visibility-state"
+import { cn } from "@/lib/utils"
 import {
     Select,
     SelectContent,
@@ -28,7 +30,6 @@ interface DashboardHeaderProps {
 
 const periodTabs = [
     { id: 'dia', label: 'Dia' },
-    { id: 'semana', label: 'Semana' },
     { id: 'mes', label: 'Mês' },
     { id: 'ano', label: 'Ano' },
 ]
@@ -36,6 +37,7 @@ const periodTabs = [
 export function DashboardHeader({ userName }: DashboardHeaderProps) {
     const router = useRouter()
     const searchParams = useSearchParams()
+    const { isVisible, toggleVisibility } = useVisibility()
     const [isPending, startTransition] = useTransition()
     const [searchValue, setSearchValue] = React.useState(searchParams.get('q') || "")
 
@@ -116,69 +118,92 @@ export function DashboardHeader({ userName }: DashboardHeaderProps) {
                 activeTab={range}
                 onTabChange={handleRangeChange as any}
                 variant="simple"
+                rightContent={
+                    <div className="hidden md:flex items-center gap-3">
+                        <div className="relative w-[200px]">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                            <Input placeholder="Buscar" className="pl-9 h-10 font-inter" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} />
+                        </div>
+                        <div className="flex items-center h-10 rounded-md border border-input overflow-hidden">
+                            {periodTabs.map(t => (
+                                <button
+                                    key={t.id}
+                                    onClick={() => handleRangeChange(t.id as TimeRange)}
+                                    className={cn(
+                                        "h-10 px-4 text-sm font-inter transition-colors border-r border-input last:border-r-0",
+                                        range === t.id
+                                            ? "bg-accent text-foreground"
+                                            : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                    )}
+                                >
+                                    {t.label}
+                                </button>
+                            ))}
+                        </div>
+                        <AdaptiveDatePicker mode={range} value={date} onChange={handleDateChange} className="w-[120px]" />
+                        <Button variant="outline" size="icon" className="text-muted-foreground hover:text-foreground" onClick={toggleVisibility}>
+                            {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                        </Button>
+                    </div>
+                }
             />
 
-            <div className="max-w-[1440px] mx-auto px-5 md:px-8 w-full pt-5 md:pt-8 pb-0">
-                <div className="flex flex-row items-center justify-between gap-2">
-                    <div className="min-w-0">
-                        <h1 className="text-3xl font-semibold md:font-bold tracking-tight text-foreground font-jakarta truncate">
-                            Olá, {userName.split(' ')[0]}!
-                        </h1>
+            <div className="max-w-[1440px] mx-auto px-6 w-full pt-4 md:pt-6 pb-0">
+                {/* Desktop: título + status segmentado */}
+                <div className="hidden md:flex items-center justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                        <h2 className="text-2xl font-semibold text-foreground font-jakarta">Olá, {userName.split(' ')[0]}!</h2>
+                        <span className="w-px h-5 bg-border" />
+                        <p className="text-sm text-muted-foreground font-inter">Visão geral das suas finanças</p>
                     </div>
-
-                    <div id="standard-filters" className="flex flex-row items-center gap-2 md:gap-3 font-sans shrink-0">
-                        {/* Linha de filtros rápidos: Select/Tabs + DatePicker (Ícone) */}
-                        <div className="flex items-center gap-2">
-                            {/* Visualização de Período: Select no Mobile */}
-                            <Select value={range} onValueChange={handleRangeChange as any}>
-                                <SelectTrigger className="w-auto min-w-[max-content] gap-2 h-10 shrink-0 md:hidden font-inter text-foreground">
-                                    <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectItem value="dia">Dia</SelectItem>
-                                    <SelectItem value="semana">Semana</SelectItem>
-                                    <SelectItem value="mes">Mês</SelectItem>
-                                    <SelectItem value="ano">Ano</SelectItem>
-                                </SelectContent>
-                            </Select>
-
-                            {/* Status: Tabs no Desktop */}
-                            <Tabs value={statusFilter} onValueChange={handleStatusFilterChange} className="h-10 hidden md:flex">
-                                <TabsList className="h-10">
-                                    <TabsTrigger value="all" className="h-8">Todas</TabsTrigger>
-                                    <TabsTrigger value="Realizado" className="h-8">Realizadas</TabsTrigger>
-                                    <TabsTrigger value="Pendente" className="h-8">Pendentes</TabsTrigger>
-                                </TabsList>
-                            </Tabs>
-
-                            {/* Date Picker: Ícone apenas no mobile, movido para a direita */}
-                            <AdaptiveDatePicker
-                                mode={range}
-                                value={date}
-                                onChange={handleDateChange}
-                                className="w-10 px-0 justify-center h-10 shrink-0 md:w-auto md:justify-start md:px-3 [&>span]:hidden md:[&>span]:inline md:[&>svg]:mr-2"
-                            />
-                        </div>
-
-                        {/* Busca — visível Apenas no Desktop (hidden md:block) */}
-                        <div className="hidden md:block relative w-[250px] shrink-0">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                            <Input
-                                placeholder="Buscar"
-                                className="pl-9 h-10 font-inter w-full"
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                            />
-                        </div>
+                    <div className="flex items-center h-10 rounded-md border border-input overflow-hidden">
+                        {[
+                            { id: "all", label: "Todas" },
+                            { id: "Realizado", label: "Realizadas" },
+                            { id: "Pendente", label: "Pendentes" },
+                        ].map(s => (
+                            <button
+                                key={s.id}
+                                onClick={() => handleStatusFilterChange(s.id)}
+                                className={cn(
+                                    "h-10 px-4 text-sm font-inter transition-colors border-r border-input last:border-r-0",
+                                    statusFilter === s.id
+                                        ? "bg-accent text-foreground"
+                                        : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                                )}
+                            >
+                                {s.label}
+                            </button>
+                        ))}
                     </div>
+                </div>
+
+                {/* Mobile: Select período + datepicker ícone */}
+                <div className="flex md:hidden items-center justify-end gap-2">
+                    <Select value={range} onValueChange={handleRangeChange as any}>
+                        <SelectTrigger className="w-auto min-w-[max-content] gap-2 h-10 shrink-0 font-inter text-foreground">
+                            <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value="dia">Dia</SelectItem>
+                            <SelectItem value="mes">Mês</SelectItem>
+                            <SelectItem value="ano">Ano</SelectItem>
+                        </SelectContent>
+                    </Select>
+                    <AdaptiveDatePicker
+                        mode={range}
+                        value={date}
+                        onChange={handleDateChange}
+                        className="w-10 px-0 justify-center h-10 shrink-0"
+                    />
                 </div>
 
                 {/* Status: Tabs no Mobile (preenchendo tudo, abaixo do title e demais filtros) */}
                 <Tabs value={statusFilter} onValueChange={handleStatusFilterChange} className="w-full flex md:hidden mt-4">
-                    <TabsList className="w-full h-10 flex bg-muted/50 p-1">
-                        <TabsTrigger value="all" className="flex-1 h-8 font-inter">Todas</TabsTrigger>
-                        <TabsTrigger value="Realizado" className="flex-1 h-8 font-inter">Realizadas</TabsTrigger>
-                        <TabsTrigger value="Pendente" className="flex-1 h-8 font-inter">Pendentes</TabsTrigger>
+                    <TabsList className="w-full">
+                        <TabsTrigger value="all" className="font-inter">Todas</TabsTrigger>
+                        <TabsTrigger value="Realizado" className="font-inter">Realizadas</TabsTrigger>
+                        <TabsTrigger value="Pendente" className="font-inter">Pendentes</TabsTrigger>
                     </TabsList>
                 </Tabs>
             </div>
