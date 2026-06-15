@@ -22,7 +22,9 @@ const signupSchema = z.object({
     password: z.string()
         .min(8, 'A senha deve ter pelo menos 8 caracteres')
         .regex(/[A-Z]/, 'Precisa de uma letra maiúscula')
-        .regex(/[0-9]/, 'Precisa de um número'),
+        .regex(/[a-z]/, 'Precisa de uma letra minúscula')
+        .regex(/[0-9]/, 'Precisa de um número')
+        .regex(/[^A-Za-z0-9]/, 'Precisa de um caractere especial'),
     confirmPassword: z.string().min(1, 'Confirme sua senha')
 }).refine((data) => data.password === data.confirmPassword, {
     message: "As senhas não coincidem",
@@ -35,7 +37,9 @@ type SignupValues = z.infer<typeof signupSchema>
 const passwordRequirements = [
     { regex: /.{8,}/, text: "Pelo menos 8 caracteres" },
     { regex: /[A-Z]/, text: "Uma letra maiúscula" },
+    { regex: /[a-z]/, text: "Uma letra minúscula" },
     { regex: /[0-9]/, text: "Um número" },
+    { regex: /[^A-Za-z0-9]/, text: "Um caractere especial" },
 ]
 
 export default function SignupPage() {
