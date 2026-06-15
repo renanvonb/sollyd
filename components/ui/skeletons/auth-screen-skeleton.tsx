@@ -3,7 +3,7 @@ import { Separator } from "@/components/ui/separator"
 
 export function AuthScreenSkeleton() {
     return (
-        <div className="flex h-screen w-full">
+        <div className="flex h-[100dvh] w-full overflow-hidden">
             {/* Login Area - 60% */}
             <div className="flex flex-1 items-center justify-center p-8 bg-white">
                 <div className="w-full max-w-md space-y-6">

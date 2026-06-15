@@ -82,7 +82,7 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="flex h-screen font-sans bg-zinc-50 overflow-hidden">
+        <div className="flex h-[100dvh] font-sans bg-zinc-50 overflow-hidden">
             {/* Left Column: Form (Login Area - 60%) */}
             <div className="flex-1 md:w-[60%] md:flex-none flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 bg-white relative">
                 <div className="w-full flex flex-col items-center">
