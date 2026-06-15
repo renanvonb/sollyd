@@ -12,19 +12,21 @@ Sollyd is a SaaS financial management application built for speed, strict data a
 - **Database**: Supabase (PostgreSQL).
 - **Language**: TypeScript (Strict mode).
 
+### Modules
+`/dashboard` · `/transacoes` · `/financeiro` · `/cadastros` · `/orcamentos` (budgets) · `/caixinhas` (savings goals) · `/investimentos` (asset portfolio).
+
 ## 3. Core Protocols & Rules (Strict Adherence Required)
 
-### 3.1. Transaction Types (The "Rosetta Stone")
-The database has been standardized to use Portuguese capitalized terms. The frontend must strictly adhere to this mapping to ensure data synchronization.
+### 3.1. Transaction Types
+The `transaction_type` enum is standardized to **`'Receita'` / `'Despesa'`** only (migration `..._standardize_transaction_type_enum`). The legacy english values `revenue`/`expense` are **no longer stored** in the database.
 
-| Concept | UI Internal Key | Database Value (Strict) | Color Theme |
-| :--- | :--- | :--- | :--- |
-| **Income** | `revenue` | `'Receita'` | **Emerald (Green)** |
-| **Expense** | `expense` | `'Despesa'` | **Rose (Red)** |
-| **Investment** | `investment` | *N/A (Uses Category)* | **Blue** |
+| Concept | Database Value (Strict) | Color Theme |
+| :--- | :--- | :--- |
+| **Income** | `'Receita'` | **Emerald (Green)** |
+| **Expense** | `'Despesa'` | **Rose (Red)** |
 
-*   **Rule**: When sending data to the backend (Supabase), **ALWAYS** transform `revenue` -> `'Receita'` and `expense` -> `'Despesa'`.
-*   **Rule**: When fetching/filtering data for charts/totals, **ALWAYS** check for both keys (e.g., `.filter(t => ['revenue', 'Receita'].includes(t.type))`) to ensure backward compatibility and migration safety.
+*   **Source of truth**: `lib/constants.ts` (`TRANSACTION_TYPES`). Import these constants — do not retype the string literals.
+*   **Legacy input only**: `normalizeTransactionType()` in `lib/constants.ts` coerces any stale `revenue`/`expense`/`investment` value coming from old callers into the canonical Portuguese value before it reaches the DB. Never write english variants back.
 
 ### 3.2. Date & Competence Filtering
 Timezone issues are critical. Follow these rules to prevent "off-by-one-day" errors.
@@ -36,7 +38,7 @@ Timezone issues are critical. Follow these rules to prevent "off-by-one-day" err
     *   **Pending Items**: Items with `status === 'Pendente'` might not have a `date`. Filter them primarily by `competence`.
 
 ### 3.3. Financial Aggregation
-*   **Client-Side**: When aggregating totals in components (e.g., `TransactionSummaryCards`), ensure you sum up both english and portuguese type variants.
+*   **Client-Side**: When aggregating totals, filter by the canonical values from `TRANSACTION_TYPES` (`'Receita'` / `'Despesa'`).
 *   **Visuals**:
     *   **Income**: Display in Green.
     *   **Expense**: Display in Red.
@@ -47,7 +49,11 @@ Timezone issues are critical. Follow these rules to prevent "off-by-one-day" err
 *   **Context**:
     *   If Transaction Type is **Receita**, filter contacts to show **Pagadores**.
     *   If Transaction Type is **Despesa**, filter contacts to show **Beneficiários**.
-*   **Hook**: Use `usePayees(type)` which handles this logic automatically.
+*   **Hook**: Use `usePayees(type)` (`hooks/use-payees.ts`) which handles this logic automatically.
+
+### 3.5. Brand Color
+*   The brand color is the Tailwind token **`brand`** (`#E0FE56`), defined in `tailwind.config.ts`.
+*   Use `bg-brand` / `text-brand` / `bg-brand-hover` / `text-brand-foreground`. **Do not** hardcode the hex literal in components.
 
 ## 4. Architecture Standards
 
@@ -67,14 +73,13 @@ Timezone issues are critical. Follow these rules to prevent "off-by-one-day" err
 *   **Mutations**: Use `React.useTransition` to handle loading states for Server Actions.
 
 ## 5. Deployment
-*   Platform: Vercel.
+*   Platform: Vercel (auto-deploy on push to `master`).
 *   Build Command: `bun run build`.
-*   Environment Variables: strict usage of `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+*   Environment Variables (see `.env.example`): `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, and `SUPABASE_SERVICE_ROLE_KEY` (server-only, admin features).
 
 ## 6. Common Issues & fixes
-*   **Empty Dashboard**: Usually caused by mismatch between UI filter (`type === 'revenue'`) and DB value (`type === 'Receita'`). **Fix**: Ensure dual-check logic.
+*   **Empty Dashboard**: Ensure filters use the canonical `'Receita'`/`'Despesa'` values from `TRANSACTION_TYPES`.
 *   **Wrong Month Data**: Caused by sending `endDate` in a monthly view or timezone shifts. **Fix**: Use strict `competence` equality for monthly views.
 
 ---
-**Last Updated**: 2026-01-27
-**Protocol Version**: GLOBAL_TYPE_RECONCILIATION_V10
+**Last Updated**: 2026-06-15

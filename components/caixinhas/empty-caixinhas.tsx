@@ -11,10 +11,9 @@ export function EmptyCaixinhas({ onCreate }: EmptyCaixinhasProps) {
     return (
         <div className="flex-1 flex flex-col items-center justify-center text-center px-6 py-16">
             <div
-                className="flex h-20 w-20 items-center justify-center rounded-2xl mb-6"
-                style={{ backgroundColor: "rgba(224, 254, 86, 0.15)" }}
+                className="flex h-20 w-20 items-center justify-center rounded-2xl mb-6 bg-brand/15"
             >
-                <PiggyBank className="h-10 w-10" style={{ color: "#E0FE56" }} />
+                <PiggyBank className="h-10 w-10 text-brand" />
             </div>
             <h2 className="text-xl font-semibold text-foreground font-jakarta">
                 Nenhuma caixinha ainda

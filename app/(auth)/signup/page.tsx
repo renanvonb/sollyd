@@ -108,7 +108,7 @@ export default function SignupPage() {
                 <div className="w-full flex flex-col items-center">
                     <div className="w-full max-w-[360px] flex flex-col items-center text-center">
                         {/* Brand Symbol Block */}
-                        <div className="bg-[#E0FE56] rounded-xl p-3 mb-4 h-12 w-12 flex items-center justify-center">
+                        <div className="bg-brand rounded-xl p-3 mb-4 h-12 w-12 flex items-center justify-center">
                             <div className="relative h-6 w-6">
                                 <Image
                                     src="/brand/symbol.png"
@@ -318,7 +318,7 @@ export default function SignupPage() {
                     <div className="mb-12">
                         <h2 className="text-[40px] font-bold tracking-tight leading-tight text-white font-jakarta">
                             Comece sua<br />
-                            jornada <span className="text-[#E0FE56]">financeira</span><br />
+                            jornada <span className="text-brand">financeira</span><br />
                             hoje mesmo
                         </h2>
                         <p className="text-lg text-neutral-400 mt-4 max-w-md">

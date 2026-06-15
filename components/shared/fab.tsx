@@ -20,7 +20,7 @@ export function Fab({ onClick, label, icon, className }: FabProps) {
             aria-label={label}
             className={cn(
                 "md:hidden fixed bottom-6 right-4 z-40 h-14 w-14 rounded-full shadow-lg p-0",
-                "bg-[#E0FE56] hover:bg-[#d4f04d] text-black",
+                "bg-brand hover:bg-brand-hover text-black",
                 "mb-[env(safe-area-inset-bottom,0px)]",
                 className
             )}

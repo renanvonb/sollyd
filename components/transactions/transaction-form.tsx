@@ -863,7 +863,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                                                     <FormControl>
                                                         <Switch
                                                             size="sm"
-                                                            className="data-[state=checked]:bg-[#E0FE56]"
+                                                            className="data-[state=checked]:bg-brand"
                                                             checked={field.value === 'recurring'}
                                                             onCheckedChange={(checked) => {
                                                                 field.onChange(checked ? 'recurring' : 'none')
@@ -930,7 +930,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                                                     <FormControl>
                                                         <Switch
                                                             size="sm"
-                                                            className="data-[state=checked]:bg-[#E0FE56]"
+                                                            className="data-[state=checked]:bg-brand"
                                                             checked={field.value === 'installment'}
                                                             onCheckedChange={(checked) => {
                                                                 field.onChange(checked ? 'installment' : 'none')
@@ -1016,7 +1016,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                         render={({ field }) => (
                             <FormItem className={cn(
                                 "rounded-lg border border-input p-4 space-y-4",
-                                field.value === 'Realizado' && "bg-gradient-to-t from-[#E0FE56]/10 to-transparent"
+                                field.value === 'Realizado' && "bg-gradient-to-t from-brand/10 to-transparent"
                             )}>
                                 <div className="flex flex-row items-center justify-between">
                                     <FormLabel className="text-sm flex items-center gap-2">
@@ -1026,7 +1026,7 @@ export function TransactionForm({ open, transaction, defaultType = "expense", on
                                     <FormControl>
                                         <Switch
                                             size="sm"
-                                            className="data-[state=checked]:bg-[#E0FE56]"
+                                            className="data-[state=checked]:bg-brand"
                                             checked={field.value === 'Realizado'}
                                             onCheckedChange={(checked) => field.onChange(checked ? 'Realizado' : 'Pendente')}
                                         />

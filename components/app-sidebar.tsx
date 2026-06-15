@@ -191,7 +191,7 @@ function SidebarNavContent({
                         >
                             <Avatar className="h-9 w-9 shrink-0">
                                 <AvatarImage src={avatarUrl || ""} className="object-cover" />
-                                <AvatarFallback className="bg-[#E0FE56] text-neutral-900 font-medium">
+                                <AvatarFallback className="bg-brand text-brand-foreground font-medium">
                                     {userName.charAt(0).toUpperCase()}
                                 </AvatarFallback>
                             </Avatar>

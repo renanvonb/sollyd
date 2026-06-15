@@ -194,7 +194,7 @@ export function ProfileSheet({ user, isOpen, onOpenChange }: ProfileSheetProps) 
                                 <div className="relative group">
                                     <Avatar className="h-36 w-36 border-4 border-background ring-2 ring-border shadow-md">
                                         <AvatarImage src={avatarUrl || ""} className="object-cover" />
-                                        <AvatarFallback className="bg-[#E0FE56] text-neutral-900 text-4xl font-bold">
+                                        <AvatarFallback className="bg-brand text-brand-foreground text-4xl font-bold">
                                             {initials}
                                         </AvatarFallback>
                                     </Avatar>

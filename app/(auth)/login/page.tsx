@@ -88,7 +88,7 @@ export default function LoginPage() {
                 <div className="w-full flex flex-col items-center">
                     <div className="w-full max-w-[360px] flex flex-col items-center text-center">
                         {/* Brand Symbol Block */}
-                        <div className="bg-[#E0FE56] rounded-xl p-3 mb-4 h-12 w-12 flex items-center justify-center">
+                        <div className="bg-brand rounded-xl p-3 mb-4 h-12 w-12 flex items-center justify-center">
                             <div className="relative h-6 w-6">
                                 <Image
                                     src="/brand/symbol.png"
@@ -248,7 +248,7 @@ export default function LoginPage() {
                     <div className="mb-12">
                         <h2 className="text-[40px] font-bold tracking-tight leading-tight text-white font-jakarta">
                             Gestão financeira<br />
-                            <span className="text-[#E0FE56]">inteligente</span> para um<br />
+                            <span className="text-brand">inteligente</span> para um<br />
                             futuro sólido
                         </h2>
                         <p className="text-lg text-neutral-400 mt-4 max-w-md">

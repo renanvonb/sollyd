@@ -30,6 +30,11 @@ const config: Config = {
 					DEFAULT: 'hsl(var(--primary))',
 					foreground: 'hsl(var(--primary-foreground))'
 				},
+				brand: {
+					DEFAULT: '#E0FE56',
+					hover: '#d4f04d',
+					foreground: '#171717'
+				},
 				secondary: {
 					DEFAULT: 'hsl(var(--secondary))',
 					foreground: 'hsl(var(--secondary-foreground))'
