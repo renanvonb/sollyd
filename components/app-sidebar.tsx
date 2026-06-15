@@ -10,7 +10,7 @@ import { Button } from '@/components/ui/button'
 import { signOut } from '@/app/actions/auth'
 import { useSidebar } from '@/hooks/use-sidebar-state'
 import { SidebarSkeleton } from '@/components/ui/skeletons'
-import { ProfileSheet } from '@/components/profile-sheet'
+import { ProfileSheet } from '@/components/shared/profile-sheet'
 import { useState } from 'react'
 
 import {
@@ -52,9 +52,9 @@ interface MenuItem {
 const menuItems: MenuItem[] = [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
     { label: 'Transações', href: '/transacoes', icon: ArrowRightLeft },
-    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp, disabled: true },
-    { label: 'Caixinhas', href: '/caixinhas', icon: PiggyBank, disabled: true },
-    { label: 'Orçamentos', href: '/orcamentos', icon: PieChart, disabled: true },
+    { label: 'Investimentos', href: '/investimentos', icon: TrendingUp },
+    { label: 'Caixinhas', href: '/caixinhas', icon: PiggyBank },
+    { label: 'Orçamentos', href: '/orcamentos', icon: PieChart },
     { label: 'Cadastros', href: '/cadastros', icon: UserPlus },
 ]
 
@@ -64,11 +64,13 @@ function SidebarNavContent({
     showLabels,
     onNavigate,
     onProfileOpen,
+    onClose,
 }: {
     user: SidebarProps['user']
     showLabels: boolean
     onNavigate?: () => void
     onProfileOpen: () => void
+    onClose?: () => void
 }) {
     const pathname = usePathname()
     const { toggle } = useSidebar()
@@ -98,7 +100,7 @@ function SidebarNavContent({
                         <Button
                             variant="ghost"
                             size="icon"
-                            onClick={toggle}
+                            onClick={onClose ?? toggle}
                             className="h-8 w-8 text-neutral-400 hover:text-white hover:bg-neutral-800/50 shrink-0"
                         >
                             <PanelLeftClose className="h-4 w-4" />
@@ -248,7 +250,7 @@ export function AppSidebar({ user }: SidebarProps) {
             <Sheet open={isMobileSheetOpen} onOpenChange={setMobileSheetOpen}>
                 <SheetContent
                     side="left"
-                    className="p-0 w-64 max-w-[85vw] bg-[#0a0a0a] border-r border-[#262626] flex flex-col"
+                    className="p-0 w-64 max-w-[85vw] bg-[#0a0a0a] border-r border-[#262626] flex flex-col [&>button]:hidden"
                 >
                     <SidebarNavContent
                         user={user}
@@ -258,6 +260,7 @@ export function AppSidebar({ user }: SidebarProps) {
                             setMobileSheetOpen(false)
                             setIsProfileOpen(true)
                         }}
+                        onClose={() => setMobileSheetOpen(false)}
                     />
                 </SheetContent>
             </Sheet>

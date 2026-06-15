@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { PageHeader } from '@/components/page-header'
+import { PageHeader } from '@/components/shared/page-header'
 
 export default async function TransacoesLayout({
     children,

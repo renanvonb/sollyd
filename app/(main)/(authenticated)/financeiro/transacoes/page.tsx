@@ -1,5 +1,5 @@
 import { Suspense } from "react"
-import TransactionsClient from "@/components/transactions-client"
+import TransactionsClient from "@/components/transactions/transactions-client"
 import { getTransactions } from "@/app/actions/transactions-fetch"
 import { TimeRange } from "@/types/time-range"
 import { Skeleton } from "@/components/ui/skeleton"

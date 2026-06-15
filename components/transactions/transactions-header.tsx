@@ -44,9 +44,9 @@ export function TransactionsHeader({
         <div className="flex-none bg-background z-10 w-full md:hidden">
             <div className="w-full pb-0">
                 {/* Mobile: Range + DatePicker + Add */}
-                <div className="flex md:hidden items-center gap-2 justify-end">
+                <div className="flex md:hidden items-center gap-2">
                     <Select value={range} onValueChange={(v) => onRangeChange(v as TimeRange)}>
-                        <SelectTrigger className="w-auto min-w-[max-content] gap-2 h-10 shrink-0 font-inter text-foreground">
+                        <SelectTrigger className="flex-1 min-w-0 gap-2 h-10 font-inter text-foreground">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
@@ -59,7 +59,7 @@ export function TransactionsHeader({
                         mode={range as TimeRange}
                         value={date}
                         onChange={onDateChange}
-                        className="w-10 px-0 justify-center h-10 shrink-0"
+                        className="flex-1 min-w-0 h-10 justify-start"
                     />
                     <Button
                         className="h-10 w-10 shrink-0 p-0 font-inter font-medium"

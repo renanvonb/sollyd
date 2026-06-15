@@ -33,6 +33,7 @@ interface DataTableProps<TData, TValue> {
     onMarkAsPaid?: (row: TData) => void
     onMarkAsPending?: (row: TData) => void
     onFilteredRowsChange?: (rows: TData[]) => void
+    budgetMap?: Map<string, any>
 }
 
 export function DataTable<TData, TValue>({
@@ -44,6 +45,7 @@ export function DataTable<TData, TValue>({
     onMarkAsPaid,
     onMarkAsPending,
     onFilteredRowsChange,
+    budgetMap,
 }: DataTableProps<TData, TValue>) {
     const [isScrolled, setIsScrolled] = React.useState(false)
     const [sorting, setSorting] = React.useState<SortingState>([])
@@ -71,6 +73,7 @@ export function DataTable<TData, TValue>({
             onDelete,
             onMarkAsPaid,
             onMarkAsPending,
+            budgetMap,
         },
     })
 

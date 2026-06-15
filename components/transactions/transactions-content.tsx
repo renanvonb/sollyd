@@ -1,8 +1,9 @@
 "use client"
 
 import * as React from "react"
-import { TransactionTable } from "@/components/transaction-table"
-import { TransactionSummaryCards } from "@/components/transaction-summary-cards"
+import { TransactionTable } from "@/components/transactions/transaction-table"
+import { TransactionMobileList } from "@/components/transaction-mobile-list"
+import { TransactionSummaryCards } from "@/components/transactions/transaction-summary-cards"
 import { EmptyState } from "@/components/ui/empty-state"
 import { Inbox, Plus } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -19,6 +20,7 @@ interface TransactionsContentProps {
     onMarkAsPending: (transaction: Transaction) => void
     onResetSearch: () => void
     onAddClick: (type: "revenue" | "expense" | "investment") => void
+    budgetMap?: Map<string, any>
 }
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -43,6 +45,7 @@ export function TransactionsContent({
     onMarkAsPending,
     onResetSearch,
     onAddClick,
+    budgetMap,
 }: TransactionsContentProps) {
     const [filteredRows, setFilteredRows] = React.useState<any[] | null>(null)
 
@@ -75,7 +78,7 @@ export function TransactionsContent({
         : (emptyMessages[range] || "Nenhuma transação cadastrada")
 
     return (
-        <div className="flex-1 flex flex-col gap-[25px] overflow-hidden">
+        <div className="flex-1 min-h-0 flex flex-col gap-[25px] overflow-hidden">
             {/* Grid de Totalizadores (KPIs) - SEMPRE VISÍVEL */}
             <div className="flex-none font-sans">
                 <TransactionSummaryCards totals={totals} isLoading={isPending} />
@@ -119,17 +122,31 @@ export function TransactionsContent({
                         className="flex-1"
                     />
                 ) : (
-                    <div id="data-table-wrapper" className="flex-1 min-h-0 bg-card rounded-lg border border-border shadow-sm flex flex-col relative overflow-hidden font-sans">
-                        <TransactionTable
-                            data={data}
-                            searchQuery={searchQuery}
-                            onEdit={onEdit}
-                            onDelete={onDelete}
-                            onMarkAsPaid={onMarkAsPaid}
-                            onMarkAsPending={onMarkAsPending}
-                            onFilteredRowsChange={setFilteredRows}
-                        />
-                    </div>
+                    <>
+                        {/* DESKTOP: tabela */}
+                        <div id="data-table-wrapper" className="hidden md:flex flex-1 min-h-0 bg-card rounded-lg border border-border shadow-sm flex-col relative overflow-hidden font-sans">
+                            <TransactionTable
+                                data={data}
+                                searchQuery={searchQuery}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                onMarkAsPaid={onMarkAsPaid}
+                                onMarkAsPending={onMarkAsPending}
+                                onFilteredRowsChange={setFilteredRows}
+                                budgetMap={budgetMap}
+                            />
+                        </div>
+                        {/* MOBILE: lista de cards */}
+                        <div className="md:hidden flex-1 min-h-0 overflow-y-auto scrollbar-hide pb-2">
+                            <TransactionMobileList
+                                data={data}
+                                onEdit={onEdit}
+                                onDelete={onDelete}
+                                onMarkAsPaid={onMarkAsPaid}
+                                onMarkAsPending={onMarkAsPending}
+                            />
+                        </div>
+                    </>
                 )}
             </div>
         </div>

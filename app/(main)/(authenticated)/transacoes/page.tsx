@@ -5,12 +5,15 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { DateRange } from "react-day-picker"
 import { getTransactions } from "@/app/actions/transactions-fetch"
 import { deleteTransaction, markAsPaid, markAsPending } from "@/app/actions/transactions"
+import { getBudgetConsumptionForMonth } from "@/app/actions/budgets"
+import { currentYearMonth } from "@/lib/budget-utils"
+import type { BudgetConsumption } from "@/types/budget"
 import { TimeRange } from "@/types/time-range"
 import { normalizeSearch, cn } from "@/lib/utils"
 import { TopBar } from "@/components/ui/top-bar"
 import { TransactionsHeader } from "@/components/transactions/transactions-header"
 import { TransactionsContent } from "@/components/transactions/transactions-content"
-import { TransactionForm } from "@/components/transaction-form"
+import { TransactionForm } from "@/components/transactions/transaction-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
@@ -51,6 +54,7 @@ export default function TransactionsPage() {
 
     // State
     const [data, setData] = React.useState<any[]>([])
+    const [budgetMap, setBudgetMap] = React.useState<Map<string, BudgetConsumption>>(new Map())
     const [loading, setLoading] = React.useState(true)
     const [searchValue, setSearchValue] = React.useState(searchParams.get('q') || "")
     const [statusFilter, setStatusFilter] = React.useState(searchParams.get('status') || "all")
@@ -78,6 +82,14 @@ export default function TransactionsPage() {
                 endDate: (range === 'mes') ? undefined : (to || undefined),
             })
             setData(result)
+
+            // Consumo de orçamentos do mês atual → Map para lookup O(1) na tabela (evita N+1)
+            const budgetRes = await getBudgetConsumptionForMonth(currentYearMonth())
+            if (budgetRes.success && budgetRes.data) {
+                setBudgetMap(new Map(
+                    budgetRes.data.map((c) => [`${c.category_id}:${c.subcategory_id ?? "null"}`, c])
+                ))
+            }
         } catch (error) {
             console.error("Error fetching transactions:", error)
             toast.error("Erro de carregamento", {
@@ -281,7 +293,7 @@ export default function TransactionsPage() {
     const periodDescription = `${filteredData.length} ${isSingular ? 'transação' : 'transações'} ${statusAdjective} neste ${periodNoun}`
 
     return (
-        <div className="flex-1 flex flex-col overflow-hidden bg-background">
+        <div className="h-dvh flex flex-col overflow-hidden bg-background">
             {/* Top Bar with Period Tabs */}
             <TopBar
                 moduleName="Transações"
@@ -320,7 +332,7 @@ export default function TransactionsPage() {
             />
 
             {/* Main Content Wrapper — padding alinhado ao dashboard */}
-            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
+            <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 min-h-0 flex flex-col pt-4 md:pt-6 pb-4 md:pb-8 gap-5 md:gap-6 overflow-hidden">
 
                 <TransactionsHeader
                     title="Transações"
@@ -381,6 +393,7 @@ export default function TransactionsPage() {
                     onMarkAsPending={handleMarkAsPending}
                     onResetSearch={() => setSearchValue("")}
                     onAddClick={handleAddClick}
+                    budgetMap={budgetMap}
                 />
 
                 {/* Sheet Nova Transação */}

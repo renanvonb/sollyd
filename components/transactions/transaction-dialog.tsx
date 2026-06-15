@@ -49,7 +49,7 @@ import {
     getSubcategories
 } from "@/app/actions/transaction-data"
 import { getColorClass } from "@/components/cadastros/color-picker"
-import { usePayees } from "@/hooks/usePayees"
+import { usePayees } from "@/hooks/use-payees"
 import { Wallet, Category, Classification, Subcategory } from "@/types/transaction"
 
 const transactionSchema = z.object({

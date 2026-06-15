@@ -1,7 +1,7 @@
 import { Skeleton } from "@/components/ui/skeleton"
 import { Separator } from "@/components/ui/separator"
 import { cn } from "@/lib/utils"
-import { TransactionSummaryCards } from "@/components/transaction-summary-cards"
+import { TransactionSummaryCards } from "@/components/transactions/transaction-summary-cards"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import {

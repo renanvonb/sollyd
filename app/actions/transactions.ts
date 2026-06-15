@@ -4,33 +4,35 @@ import { createClient } from '@/lib/supabase/server'
 import { revalidatePath } from 'next/cache'
 import { z } from 'zod'
 import { addMonths, addYears, startOfMonth, format, parseISO } from 'date-fns'
+import { TRANSACTION_TYPES, TRANSACTION_STATUS, PAYMENT_METHOD_LIST, normalizeTransactionType } from '@/lib/constants'
 
 const emptyToNull = (val: any) => (val === "" ? null : val);
 
 const transactionSchema = z.object({
     description: z.string().min(1, "Descrição é obrigatória"),
     amount: z.coerce.number().gt(0, "Valor deve ser maior que zero"),
-    type: z.enum(["revenue", "expense", "Receita", "Despesa"]),
+    // Normaliza valores legados (revenue/expense) → canônico; enum só aceita 'Receita'/'Despesa'.
+    type: z.preprocess(normalizeTransactionType, z.enum([TRANSACTION_TYPES.RECEITA, TRANSACTION_TYPES.DESPESA])),
     payee_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
-    payment_method: z.preprocess(emptyToNull, z.enum(["Boleto", "Crédito", "Débito", "Pix", "Dinheiro"]).optional().nullable()),
+    payment_method: z.preprocess(emptyToNull, z.enum(PAYMENT_METHOD_LIST).optional().nullable()),
     classification_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
     category_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
     subcategory_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
     date: z.preprocess(emptyToNull, z.union([z.string(), z.date()]).optional().nullable()),
     realized_at: z.preprocess(emptyToNull, z.union([z.string(), z.date()]).optional().nullable()),
     competence: z.preprocess(emptyToNull, z.union([z.string(), z.date()]).optional().nullable()),
-    status: z.enum(['Realizado', 'Pendente']).optional().nullable(),
+    status: z.enum([TRANSACTION_STATUS.REALIZADO, TRANSACTION_STATUS.PENDENTE]).optional().nullable(),
     wallet_id: z.preprocess(emptyToNull, z.string().uuid().optional().nullable()),
     is_recurring: z.boolean().optional().default(false),
     is_installment: z.boolean().optional().default(false),
     recurring_frequency: z.enum(['monthly', 'yearly']).optional().nullable(),
     recurring_occurrences: z.coerce.number().min(2).max(60).optional().nullable(),
 }).superRefine((data, ctx) => {
-    // Payee/Payer validation
-    if ((data.type === 'expense' || data.type === 'revenue') && !data.payee_id) {
+    // Payee/Payer validation — exigido para ambos os tipos
+    if (!data.payee_id) {
         ctx.addIssue({
             code: z.ZodIssueCode.custom,
-            message: data.type === 'revenue' ? "Pagador é obrigatório" : "Favorecido é obrigatório",
+            message: data.type === TRANSACTION_TYPES.RECEITA ? "Pagador é obrigatório" : "Favorecido é obrigatório",
             path: ["payee_id"],
         });
     }

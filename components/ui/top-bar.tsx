@@ -60,8 +60,24 @@ export function TopBar({
     return (
         <TooltipProvider delayDuration={300}>
             {/* ── MOBILE Topbar (oculto em desktop) ── */}
-            <header className="sticky top-0 z-30 border-b border-border bg-card dark:bg-[#0a0a0a] h-14 flex-none font-sans flex md:hidden items-center justify-between px-4 relative">
-                {/* Esquerda: ocultar valores */}
+            <header className="sticky top-0 z-30 border-b border-border bg-card dark:bg-[#0a0a0a] h-14 flex-none font-sans flex md:hidden items-center justify-between pl-6 pr-4">
+                {/* Esquerda: símbolo + nome da página */}
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className="relative h-6 w-6 shrink-0">
+                        <Image
+                            src="/brand/symbol.png"
+                            alt="Sollyd"
+                            fill
+                            className="object-contain"
+                            style={{ filter: 'brightness(0) saturate(100%) invert(93%) sepia(46%) saturate(1272%) hue-rotate(8deg) brightness(104%) contrast(98%)' }}
+                        />
+                    </div>
+                    <span className="font-jakarta font-semibold text-foreground truncate">
+                        {displayName}
+                    </span>
+                </div>
+
+                {/* Direita: ocultar valores + menu hamburguer */}
                 <div className="flex items-center gap-1">
                     <Button
                         variant="ghost"
@@ -72,31 +88,16 @@ export function TopBar({
                     >
                         {isVisible ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                     </Button>
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={toggle}
+                        className="h-9 w-9 text-muted-foreground hover:text-foreground"
+                        aria-label="Abrir menu"
+                    >
+                        <Menu className="h-5 w-5" />
+                    </Button>
                 </div>
-
-                {/* Centro: símbolo da Sollyd */}
-                <div className="absolute left-1/2 -translate-x-1/2">
-                    <div className="relative h-6 w-6">
-                        <Image
-                            src="/brand/symbol.png"
-                            alt="Sollyd"
-                            fill
-                            className="object-contain"
-                            style={{ filter: 'brightness(0) saturate(100%) invert(93%) sepia(46%) saturate(1272%) hue-rotate(8deg) brightness(104%) contrast(98%)' }}
-                        />
-                    </div>
-                </div>
-
-                {/* Direita: menu hamburguer */}
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={toggle}
-                    className="h-9 w-9 text-muted-foreground hover:text-foreground"
-                    aria-label="Abrir menu"
-                >
-                    <Menu className="h-5 w-5" />
-                </Button>
             </header>
 
             {/* ── DESKTOP TopBar (oculto em mobile) ── */}

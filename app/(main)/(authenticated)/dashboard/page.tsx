@@ -5,9 +5,11 @@ import { createClient } from "@/lib/supabase/server"
 import { getTransactions } from "@/app/actions/transactions-fetch"
 import { TimeRange } from "@/types/time-range"
 import { getDashboardMetrics } from "@/app/actions/dashboard-metrics"
+import { getBudgetsAlertSummary } from "@/app/actions/budgets"
+import { getInvestmentSummaryForDashboard } from "@/app/actions/investments"
 import { DashboardSkeleton } from "@/components/ui/skeletons"
-import { DashboardHeader } from "@/components/dashboard-header"
-import { DashboardGraphs } from "@/components/dashboard-graphs"
+import { DashboardHeader } from "@/components/dashboard/dashboard-header"
+import { DashboardGraphs } from "@/components/dashboard/dashboard-graphs"
 
 interface DashboardPageProps {
     searchParams: {
@@ -32,7 +34,7 @@ async function DashboardContent({ searchParams }: DashboardPageProps) {
     const fetchStartDate = range === 'mes' ? competenceDate : from
     const fetchEndDate = range === 'mes' ? undefined : to
 
-    const [metrics, initialData] = await Promise.all([
+    const [metrics, initialData, budgetAlertRes, investmentRes] = await Promise.all([
         getDashboardMetrics({
             range,
             startDate: fetchStartDate,
@@ -45,10 +47,19 @@ async function DashboardContent({ searchParams }: DashboardPageProps) {
             startDate: fetchStartDate, // Use formatted YYYY-MM-01 for month view
             endDate: fetchEndDate, // Undefined for month view
             status
-        })
+        }),
+        getBudgetsAlertSummary(competenceDate.slice(0, 7)), // 'yyyy-MM'
+        getInvestmentSummaryForDashboard()
     ])
 
-    return <DashboardGraphs initialData={initialData} metrics={metrics} />
+    return (
+        <DashboardGraphs
+            initialData={initialData}
+            metrics={metrics}
+            budgetAlert={budgetAlertRes.success ? budgetAlertRes.data : undefined}
+            investmentSummary={investmentRes.success ? investmentRes.data : undefined}
+        />
+    )
 }
 
 export default async function DashboardPage({ searchParams }: DashboardPageProps) {

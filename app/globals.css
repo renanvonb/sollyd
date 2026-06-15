@@ -190,4 +190,37 @@
     background-size: 100% 200%;
     background-repeat: no-repeat;
   }
+
+  /* ===== Mobile base ===== */
+  /* Previne scroll horizontal acidental */
+  html,
+  body {
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Remove highlight azul ao tocar (mobile) — sem efeito no desktop */
+  * {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* iOS dá zoom em input com font < 16px. Escopo só mobile p/ não mexer no desktop. */
+  @media (max-width: 767px) {
+
+    input,
+    select,
+    textarea {
+      font-size: max(16px, 1rem);
+    }
+  }
+
+  /* Safe areas (notch / home indicator) */
+  .safe-area-bottom,
+  .pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+
+  .safe-area-top {
+    padding-top: env(safe-area-inset-top, 0px);
+  }
 }

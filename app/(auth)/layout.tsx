@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "../globals.css";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,14 @@ const jakarta = Plus_Jakarta_Sans({
 export const metadata: Metadata = {
     title: "Sollyd - Login",
     description: "Entre na sua conta Sollyd",
+};
+
+export const viewport: Viewport = {
+    width: 'device-width',
+    initialScale: 1,
+    maximumScale: 1,
+    userScalable: false,
+    viewportFit: 'cover',
 };
 
 export default function AuthLayout({

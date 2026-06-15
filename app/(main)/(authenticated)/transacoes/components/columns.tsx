@@ -12,6 +12,7 @@ import { HighlightText } from "@/components/ui/highlight-text"
 import { DataTableSortHeader } from "./data-table-sort-header"
 import { DataTableFilterHeader } from "./data-table-filter-header"
 import { TruncatedTextWithTooltip } from "./truncated-text-tooltip"
+import { BudgetIndicatorIcon } from "@/components/orcamentos/budget-indicator-icon"
 import { MoreHorizontal, Pencil, Trash2, CheckCircle, Clock, Repeat, ArrowDownLeft, ArrowUpRight, TrendingUp } from "lucide-react"
 import {
     DropdownMenu,
@@ -131,12 +132,21 @@ export const columns: ColumnDef<Transaction>[] = [
                 .map((v) => ({ label: v, value: v }))
             return <DataTableFilterHeader column={column} title="Categoria" options={options} />
         },
-        cell: ({ row }) => {
-            const category = row.original.categories?.name
+        cell: ({ row, table }) => {
+            const t = row.original
+            const category = t.categories?.name
+            const meta = table.options.meta as any
+            const isExpense = t.type === "Despesa" || t.type === "expense"
+            const consumption = isExpense
+                ? meta?.budgetMap?.get(`${t.category_id}:${t.subcategory_id ?? "null"}`)
+                : undefined
             return category ? (
-                <Badge variant="secondary" className="text-[10px] font-normal whitespace-nowrap shadow-none md:text-xs">
-                    {category}
-                </Badge>
+                <div className="flex items-center gap-1">
+                    <Badge variant="secondary" className="text-[10px] font-normal whitespace-nowrap shadow-none md:text-xs">
+                        {category}
+                    </Badge>
+                    <BudgetIndicatorIcon consumption={consumption} />
+                </div>
             ) : (
                 <span className="text-xs md:text-sm text-muted-foreground">-</span>
             )
