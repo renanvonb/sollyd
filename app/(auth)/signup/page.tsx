@@ -106,10 +106,10 @@ export default function SignupPage() {
     }
 
     return (
-        <div className="flex h-screen font-sans bg-zinc-50 overflow-hidden">
+        <div className="flex h-[100dvh] font-sans bg-zinc-50 overflow-hidden">
             {/* Left Column: Form (Signup Area - 60%) */}
-            <div className="flex-1 md:w-[60%] md:flex-none flex flex-col items-center justify-center p-8 md:p-12 lg:p-16 bg-white relative">
-                <div className="w-full flex flex-col items-center">
+            <div className="flex-1 md:w-[60%] md:flex-none flex flex-col items-center overflow-y-auto p-8 md:p-12 lg:p-16 bg-white relative">
+                <div className="w-full flex flex-col items-center my-auto">
                     <div className="w-full max-w-[360px] flex flex-col items-center text-center">
                         {/* Brand Symbol Block */}
                         <div className="bg-brand rounded-xl p-3 mb-4 h-12 w-12 flex items-center justify-center">
