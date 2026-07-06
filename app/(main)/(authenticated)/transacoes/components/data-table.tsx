@@ -50,7 +50,7 @@ export function DataTable<TData, TValue>({
     const [isScrolled, setIsScrolled] = React.useState(false)
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([])
-    const [columnVisibility] = React.useState({ payment_method: false, competence: false })
+    const [columnVisibility] = React.useState({ competence: false })
 
     const table = useReactTable({
         data,

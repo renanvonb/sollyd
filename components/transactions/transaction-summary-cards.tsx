@@ -3,7 +3,7 @@
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
-import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet } from "lucide-react"
+import { ArrowUpRight, ArrowDownRight, TrendingUp, Wallet, PiggyBank } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useVisibility } from "@/hooks/use-visibility-state"
 
@@ -11,6 +11,7 @@ interface SummaryTotals {
     income: number
     expense: number
     investment: number
+    caixinhas?: number
     balance: number
 }
 
@@ -62,6 +63,13 @@ export function TransactionSummaryCards({ totals, isLoading, investmentGain }: T
             hasBadge: true,
         },
         {
+            label: "Caixinhas",
+            value: totals.caixinhas ?? 0,
+            icon: PiggyBank,
+            accentColor: "bg-lime-500",
+            hasBadge: false,
+        },
+        {
             label: "Saldo",
             value: totals.balance,
             icon: Wallet,
@@ -71,7 +79,7 @@ export function TransactionSummaryCards({ totals, isLoading, investmentGain }: T
     ]
 
     return (
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-5 gap-2 md:gap-4">
             {cards.map((card, index) => {
                 const percentage = getPercentage(card.value)
                 const Icon = card.icon

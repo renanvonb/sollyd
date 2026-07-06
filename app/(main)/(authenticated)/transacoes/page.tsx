@@ -6,6 +6,7 @@ import { DateRange } from "react-day-picker"
 import { getTransactions } from "@/app/actions/transactions-fetch"
 import { deleteTransaction, markAsPaid, markAsPending } from "@/app/actions/transactions"
 import { getBudgetConsumptionForMonth } from "@/app/actions/budgets"
+import { getSavingsBoxesSummaryForDashboard } from "@/app/actions/savings-boxes"
 import { currentYearMonth } from "@/lib/budget-utils"
 import type { BudgetConsumption } from "@/types/budget"
 import { TimeRange } from "@/types/time-range"
@@ -17,6 +18,13 @@ import { TransactionForm } from "@/components/transactions/transaction-form"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
 import { AdaptiveDatePicker } from "@/components/ui/adaptive-date-picker"
 import { useVisibility } from "@/hooks/use-visibility-state"
 import { Search, Plus, Eye, EyeOff } from "lucide-react"
@@ -55,9 +63,11 @@ export default function TransactionsPage() {
     // State
     const [data, setData] = React.useState<any[]>([])
     const [budgetMap, setBudgetMap] = React.useState<Map<string, BudgetConsumption>>(new Map())
+    const [caixinhasTotal, setCaixinhasTotal] = React.useState(0)
     const [loading, setLoading] = React.useState(true)
     const [searchValue, setSearchValue] = React.useState(searchParams.get('q') || "")
     const [statusFilter, setStatusFilter] = React.useState(searchParams.get('status') || "all")
+    const [typeFilter, setTypeFilter] = React.useState(searchParams.get('type') || "all")
     const [selectedTransaction, setSelectedTransaction] = React.useState<Transaction | null>(null)
     const [isEditSheetOpen, setIsEditSheetOpen] = React.useState(false)
     const [isNewSheetOpen, setIsNewSheetOpen] = React.useState(false)
@@ -89,6 +99,12 @@ export default function TransactionsPage() {
                 setBudgetMap(new Map(
                     budgetRes.data.map((c) => [`${c.category_id}:${c.subcategory_id ?? "null"}`, c])
                 ))
+            }
+
+            // Total guardado em caixinhas (estoque, não soma de fluxo)
+            const caixinhasRes = await getSavingsBoxesSummaryForDashboard()
+            if (caixinhasRes.success && caixinhasRes.data) {
+                setCaixinhasTotal(caixinhasRes.data.total_current_amount)
             }
         } catch (error) {
             console.error("Error fetching transactions:", error)
@@ -229,6 +245,21 @@ export default function TransactionsPage() {
             filtered = filtered.filter(t => t.status === statusFilter)
         }
 
+        // Filter by type
+        if (typeFilter !== 'all') {
+            const isAporte = (t: any) => (t.description || '').startsWith('Aporte:')
+            if (typeFilter === 'Aporte') {
+                filtered = filtered.filter(isAporte)
+            } else {
+                const typeAliases: Record<string, string[]> = {
+                    Receita: ['Receita', 'revenue'],
+                    Despesa: ['Despesa', 'expense'],
+                }
+                const accepted = typeAliases[typeFilter] || [typeFilter]
+                filtered = filtered.filter(t => accepted.includes(t.type) && !isAporte(t))
+            }
+        }
+
         // Filter by search query (apenas descrição e valor)
         if (searchQuery) {
             const normalizedQuery = normalizeSearch(searchQuery)
@@ -259,7 +290,7 @@ export default function TransactionsPage() {
         }
 
         return filtered
-    }, [data, searchQuery, statusFilter])
+    }, [data, searchQuery, statusFilter, typeFilter])
 
     const dateRange: DateRange | undefined = React.useMemo(() => {
         if (from && to) return { from: new Date(from), to: new Date(to) }
@@ -375,6 +406,17 @@ export default function TransactionsPage() {
                                 </button>
                             ))}
                         </div>
+                        <Select value={typeFilter} onValueChange={setTypeFilter}>
+                            <SelectTrigger className="w-[140px] h-10 font-inter">
+                                <SelectValue placeholder="Tipo" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="all">Todos</SelectItem>
+                                <SelectItem value="Receita">Receitas</SelectItem>
+                                <SelectItem value="Despesa">Despesas</SelectItem>
+                                <SelectItem value="Aporte">Aportes</SelectItem>
+                            </SelectContent>
+                        </Select>
                         <Button onClick={() => handleAddClick("expense")} className="font-inter">
                             <Plus className="h-4 w-4" />
                             Adicionar
@@ -394,6 +436,7 @@ export default function TransactionsPage() {
                     onResetSearch={() => setSearchValue("")}
                     onAddClick={handleAddClick}
                     budgetMap={budgetMap}
+                    caixinhasTotal={caixinhasTotal}
                 />
 
                 {/* Sheet Nova Transação */}

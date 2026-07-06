@@ -89,7 +89,8 @@ export async function getTransactions({ range, startDate, endDate, status }: Get
                 classifications(id, name, color),
                 categories(id, name, color),
                 subcategories(id, name),
-                wallets(id, name, color)
+                wallets(id, name, color),
+                savings_box_contributions(savings_box_id, savings_boxes(id, name, icon, color))
             `)
             .eq('user_id', userId)
 

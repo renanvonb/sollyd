@@ -13,6 +13,7 @@ import { DataTableSortHeader } from "./data-table-sort-header"
 import { DataTableFilterHeader } from "./data-table-filter-header"
 import { TruncatedTextWithTooltip } from "./truncated-text-tooltip"
 import { BudgetIndicatorIcon } from "@/components/orcamentos/budget-indicator-icon"
+import { getSavingsIcon } from "@/components/caixinhas/savings-box-meta"
 import { MoreHorizontal, Pencil, Trash2, CheckCircle, Clock, Repeat, ArrowDownLeft, ArrowUpRight, TrendingUp } from "lucide-react"
 import {
     DropdownMenu,
@@ -47,6 +48,22 @@ export const columns: ColumnDef<Transaction>[] = [
         header: () => null,
         cell: ({ row }) => {
             const typeValue = row.getValue("type") as string
+            const savingsBox = row.original.savings_box_contributions?.[0]?.savings_boxes
+
+            if (savingsBox) {
+                const Icon = getSavingsIcon(savingsBox.icon)
+                return (
+                    <span
+                        title={`Aporte: ${savingsBox.name}`}
+                        aria-label={`Aporte: ${savingsBox.name}`}
+                        className="inline-flex items-center justify-center h-7 w-7 rounded-full"
+                        style={{ backgroundColor: `${savingsBox.color}33` }}
+                    >
+                        <Icon className="h-4 w-4" style={{ color: savingsBox.color }} />
+                    </span>
+                )
+            }
+
             const config = {
                 revenue: { label: "Receita", Icon: ArrowDownLeft, className: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" },
                 Receita: { label: "Receita", Icon: ArrowDownLeft, className: "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/40 dark:text-emerald-400" },

@@ -62,6 +62,13 @@ export interface Wallet {
     created_at: string;
 }
 
+export interface SavingsBoxRef {
+    id: string;
+    name: string;
+    icon: string;
+    color: string;
+}
+
 export interface Transaction {
     id: string;
     user_id: string;
@@ -94,6 +101,7 @@ export interface Transaction {
     categories?: Category;
     subcategories?: Subcategory;
     wallets?: Wallet;
+    savings_box_contributions?: { savings_box_id: string; savings_boxes?: SavingsBoxRef }[];
 }
 
 export interface CreateTransactionInput {

@@ -21,6 +21,7 @@ interface TransactionsContentProps {
     onResetSearch: () => void
     onAddClick: (type: "revenue" | "expense" | "investment") => void
     budgetMap?: Map<string, any>
+    caixinhasTotal?: number
 }
 
 import { Skeleton } from "@/components/ui/skeleton"
@@ -46,6 +47,7 @@ export function TransactionsContent({
     onResetSearch,
     onAddClick,
     budgetMap,
+    caixinhasTotal,
 }: TransactionsContentProps) {
     const [filteredRows, setFilteredRows] = React.useState<any[] | null>(null)
 
@@ -73,6 +75,12 @@ export function TransactionsContent({
         }, { income: 0, expense: 0, investment: 0, balance: 0 })
     }, [totalsSource])
 
+    // Card "Caixinhas" reflete o total guardado (estoque), não soma de fluxo do período.
+    const displayTotals = React.useMemo(() => ({
+        ...totals,
+        caixinhas: caixinhasTotal ?? 0,
+    }), [totals, caixinhasTotal])
+
     const emptyTitle = searchQuery
         ? "Nenhuma transação encontrada"
         : (emptyMessages[range] || "Nenhuma transação cadastrada")
@@ -81,7 +89,7 @@ export function TransactionsContent({
         <div className="flex-1 min-h-0 flex flex-col gap-[25px] overflow-hidden">
             {/* Grid de Totalizadores (KPIs) - SEMPRE VISÍVEL */}
             <div className="flex-none font-sans">
-                <TransactionSummaryCards totals={totals} isLoading={isPending} />
+                <TransactionSummaryCards totals={displayTotals} isLoading={isPending} />
             </div>
 
             {/* Área de Conteúdo */}

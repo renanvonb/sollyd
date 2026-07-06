@@ -63,6 +63,30 @@ export async function getSavingsBoxes(
 }
 
 // ============================================================
+// 4.1b getSavingsBoxesSummaryForDashboard
+// ============================================================
+export async function getSavingsBoxesSummaryForDashboard(): Promise<{ success: boolean; data?: { total_current_amount: number }; error?: string }> {
+    try {
+        const supabase = createClient()
+        const { data: { user }, error: authError } = await supabase.auth.getUser()
+        if (authError || !user) throw new Error('Usuário não autenticado')
+
+        const { data, error } = await supabase
+            .from('savings_boxes')
+            .select('current_amount')
+            .eq('user_id', user.id)
+            .eq('is_archived', false)
+        if (error) throw error
+
+        const total = (data || []).reduce((sum, box) => sum + Number(box.current_amount), 0)
+        return { success: true, data: { total_current_amount: total } }
+    } catch (error: any) {
+        console.error('[getSavingsBoxesSummaryForDashboard]', error)
+        return { success: false, error: error.message }
+    }
+}
+
+// ============================================================
 // 4.2 getSavingsBoxById
 // ============================================================
 export async function getSavingsBoxById(

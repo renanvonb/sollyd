@@ -7,6 +7,7 @@ import { ArrowLeft, Plus, CheckCircle2, AlertTriangle } from "lucide-react"
 
 import { TopBar } from "@/components/ui/top-bar"
 import { Button } from "@/components/ui/button"
+import { cn } from "@/lib/utils"
 
 import { getSavingsBoxById } from "@/app/actions/savings-boxes"
 import type { SavingsBoxWithProgress } from "@/types/savings-box"
@@ -57,15 +58,17 @@ export function CaixinhaDetailClient({ initialBox }: CaixinhaDetailClientProps) 
                         <div className="min-w-0">
                             <h1 className="truncate text-2xl font-semibold text-foreground font-jakarta">{box.name}</h1>
                             {box.is_completed ? (
-                                <span className="inline-flex items-center gap-1 text-xs font-medium text-green-600 font-inter">
+                                <span className="inline-flex items-center gap-1 rounded-full bg-green-500/15 px-2 py-0.5 text-xs font-medium text-green-600 font-inter">
                                     <CheckCircle2 className="h-3 w-3" /> Meta atingida
                                 </span>
                             ) : nearDeadline ? (
-                                <span className="inline-flex items-center gap-1 text-xs font-medium text-yellow-600 font-inter">
+                                <span className="inline-flex items-center gap-1 rounded-full bg-yellow-500/15 px-2 py-0.5 text-xs font-medium text-yellow-600 font-inter">
                                     <AlertTriangle className="h-3 w-3" /> Prazo próximo
                                 </span>
                             ) : (
-                                <span className="text-xs text-muted-foreground font-inter">Em andamento</span>
+                                <span className="inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium font-inter" style={{ backgroundColor: `${box.color}22`, color: box.color }}>
+                                    Em andamento
+                                </span>
                             )}
                         </div>
                     </div>
@@ -75,50 +78,30 @@ export function CaixinhaDetailClient({ initialBox }: CaixinhaDetailClientProps) 
                     </Button>
                 </div>
 
-                {/* Resumo */}
-                <div className="rounded-2xl border border-border bg-card p-6">
-                    {box.description && (
-                        <p className="mb-4 text-sm text-muted-foreground font-inter">{box.description}</p>
-                    )}
-                    <div className="flex items-end justify-between">
-                        <div>
-                            <p className="text-2xl font-semibold text-foreground font-jakarta">
-                                {formatBRL(box.current_amount)}
-                            </p>
-                            <p className="text-sm text-muted-foreground font-inter">
-                                de {formatBRL(box.target_amount)}
-                            </p>
-                        </div>
-                        <span className="text-2xl font-bold" style={{ color: box.color }}>
-                            {box.progress_percentage}%
-                        </span>
-                    </div>
+                {/* Métricas */}
+                <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+                    <MetricCard label="Valor atual" value={formatBRL(box.current_amount)} />
+                    <MetricCard label="Meta" value={formatBRL(box.target_amount)} />
+                    <MetricCard label="Restante" value={formatBRL(box.remaining_amount)} />
+                    <MetricCard label="Progresso" value={`${box.progress_percentage}%`} valueStyle={{ color: box.color }} />
+                </div>
 
-                    <div className="mt-4 h-4 w-full overflow-hidden rounded-full bg-muted">
+                {/* Progresso */}
+                <div className="rounded-2xl border border-border bg-card p-6">
+                    <div className="h-4 w-full overflow-hidden rounded-full bg-muted">
                         <div
                             className="h-full rounded-full transition-all duration-500"
                             style={{ width: `${box.progress_percentage}%`, backgroundColor: box.color }}
                         />
                     </div>
+                </div>
 
-                    {box.remaining_amount > 0 && (
-                        <p className="mt-3 text-sm text-muted-foreground font-inter">
-                            Faltam {formatBRL(box.remaining_amount)} para a meta
-                        </p>
-                    )}
-
-                    {box.target_date && box.days_remaining != null && !box.is_completed && (
-                        <div className="mt-4 flex flex-wrap gap-x-6 gap-y-1 text-sm font-inter">
-                            <span className="text-muted-foreground">
-                                ⏳ {box.days_remaining} dias restantes
-                            </span>
-                            {box.monthly_needed != null && (
-                                <span className="text-muted-foreground">
-                                    💡 Sugestão: {formatBRL(box.monthly_needed)}/mês
-                                </span>
-                            )}
-                        </div>
-                    )}
+                {/* Informações */}
+                <div className="rounded-2xl border border-border bg-card p-5 grid grid-cols-2 gap-4 text-sm sm:grid-cols-4">
+                    <Info label="Descrição" value={box.description || "—"} />
+                    <Info label="Data alvo" value={box.target_date ? box.target_date.split("-").reverse().join("/") : "—"} />
+                    <Info label="Dias restantes" value={box.days_remaining != null && !box.is_completed ? `${box.days_remaining} dias` : "—"} />
+                    <Info label="Sugestão mensal" value={box.monthly_needed != null && !box.is_completed ? `${formatBRL(box.monthly_needed)}/mês` : "—"} />
                 </div>
 
                 {/* Histórico */}
@@ -129,6 +112,24 @@ export function CaixinhaDetailClient({ initialBox }: CaixinhaDetailClientProps) 
             </div>
 
             <ContributionForm open={contribOpen} onOpenChange={setContribOpen} box={box} onSuccess={refresh} />
+        </div>
+    )
+}
+
+function MetricCard({ label, value, valueStyle }: { label: string; value: string; valueStyle?: React.CSSProperties }) {
+    return (
+        <div className="rounded-xl border border-border bg-card p-4">
+            <p className="text-xs text-muted-foreground font-inter">{label}</p>
+            <p className={cn("mt-1 text-base font-semibold font-inter text-foreground")} style={valueStyle}>{value}</p>
+        </div>
+    )
+}
+
+function Info({ label, value }: { label: string; value: string }) {
+    return (
+        <div className="min-w-0">
+            <p className="text-xs text-muted-foreground font-inter">{label}</p>
+            <p className="mt-0.5 truncate font-medium text-foreground font-inter">{value}</p>
         </div>
     )
 }

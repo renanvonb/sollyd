@@ -26,9 +26,10 @@ interface DashboardGraphsProps {
     metrics?: any
     budgetAlert?: BudgetAlertSummary
     investmentSummary?: InvestmentDashboardSummary
+    caixinhasSummary?: { total_current_amount: number }
 }
 
-export function DashboardGraphs({ initialData, metrics, budgetAlert, investmentSummary }: DashboardGraphsProps) {
+export function DashboardGraphs({ initialData, metrics, budgetAlert, investmentSummary, caixinhasSummary }: DashboardGraphsProps) {
     const searchParams = useSearchParams()
 
     const range = (searchParams.get('range') as TimeRange) || 'mes'
@@ -357,12 +358,14 @@ export function DashboardGraphs({ initialData, metrics, budgetAlert, investmentS
     }, [filteredData, date, range, selectedYear, selectedCategory, selectedSubcategory, selectedClassification, selectedPayee, selectedPayer]);
 
     // Card "Investimentos" reflete o patrimônio investido (estoque), não soma de fluxo.
+    // Card "Caixinhas" reflete o total guardado (estoque), mesma lógica.
     // Saldo passa a ser income - expense (aportes já entram como Despesa).
     const displayTotals = React.useMemo(() => ({
         ...totals,
         investment: investmentSummary?.total_current_value ?? totals.investment ?? 0,
+        caixinhas: caixinhasSummary?.total_current_amount ?? 0,
         balance: (totals.income ?? 0) - (totals.expense ?? 0),
-    }), [totals, investmentSummary]);
+    }), [totals, investmentSummary, caixinhasSummary]);
 
     return (
         <div className="max-w-[1440px] mx-auto px-6 w-full flex-1 min-h-0 flex flex-col pt-4 md:pt-6 overflow-hidden">

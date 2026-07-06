@@ -7,6 +7,7 @@ import { TimeRange } from "@/types/time-range"
 import { getDashboardMetrics } from "@/app/actions/dashboard-metrics"
 import { getBudgetsAlertSummary } from "@/app/actions/budgets"
 import { getInvestmentSummaryForDashboard } from "@/app/actions/investments"
+import { getSavingsBoxesSummaryForDashboard } from "@/app/actions/savings-boxes"
 import { DashboardSkeleton } from "@/components/ui/skeletons"
 import { DashboardHeader } from "@/components/dashboard/dashboard-header"
 import { DashboardGraphs } from "@/components/dashboard/dashboard-graphs"
@@ -34,7 +35,7 @@ async function DashboardContent({ searchParams }: DashboardPageProps) {
     const fetchStartDate = range === 'mes' ? competenceDate : from
     const fetchEndDate = range === 'mes' ? undefined : to
 
-    const [metrics, initialData, budgetAlertRes, investmentRes] = await Promise.all([
+    const [metrics, initialData, budgetAlertRes, investmentRes, caixinhasRes] = await Promise.all([
         getDashboardMetrics({
             range,
             startDate: fetchStartDate,
@@ -49,7 +50,8 @@ async function DashboardContent({ searchParams }: DashboardPageProps) {
             status
         }),
         getBudgetsAlertSummary(competenceDate.slice(0, 7)), // 'yyyy-MM'
-        getInvestmentSummaryForDashboard()
+        getInvestmentSummaryForDashboard(),
+        getSavingsBoxesSummaryForDashboard()
     ])
 
     return (
@@ -58,6 +60,7 @@ async function DashboardContent({ searchParams }: DashboardPageProps) {
             metrics={metrics}
             budgetAlert={budgetAlertRes.success ? budgetAlertRes.data : undefined}
             investmentSummary={investmentRes.success ? investmentRes.data : undefined}
+            caixinhasSummary={caixinhasRes.success ? caixinhasRes.data : undefined}
         />
     )
 }
